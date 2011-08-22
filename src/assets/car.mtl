@@ -1,0 +1,12 @@
+# Material Count: 1
+newmtl fskin_fskin.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.404706 0.404706 0.404706
+Ks 0.488235 0.488235 0.488235
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd fskin.jpg
+
+
