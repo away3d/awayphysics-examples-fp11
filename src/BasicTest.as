@@ -25,20 +25,14 @@ package {
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 
-	/**
-	 * 
-	 * @author Ringo & Muzer
-	 * API will change
-	 */
-	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
-	public class Basic1 extends Sprite {
+	public class BasicTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
 		private var _physicsWorld : AWPDynamicsWorld;
 		private var _sphereShape : AWPSphereShape;
 		private var _timeStep : Number = 1.0 / 60;
 
-		public function Basic1() {
+		public function BasicTest() {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -66,7 +60,7 @@ package {
 			_physicsWorld.initWithDbvtBroadphase();
 
 			// create ground mesh
-			var material : ColorMaterial = new ColorMaterial(0x00ff00);
+			var material : ColorMaterial = new ColorMaterial(0x252525);
 			material.lights = [_light];
 			var ground : Plane = new Plane(material, 50000, 50000);
 			ground.mouseEnabled = true;
@@ -94,7 +88,7 @@ package {
 
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
 
-			material = new ColorMaterial(0xffff00);
+			material = new ColorMaterial(0xfc6a11);
 			material.lights = [_light];
 
 			// create rigidbody shapes
@@ -151,7 +145,7 @@ package {
 			impulse.scaleBy(20000);
 
 			// shoot a sphere
-			var material : ColorMaterial = new ColorMaterial(0xff0000);
+			var material : ColorMaterial = new ColorMaterial(0xb35b11);
 			material.lights = [_light];
 
 			var sphere : Sphere = new Sphere(material, 100);
