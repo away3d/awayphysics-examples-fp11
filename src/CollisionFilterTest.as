@@ -27,6 +27,7 @@ package {
 	import away3d.primitives.Sphere;
 	import away3d.primitives.Cylinder;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CollisionFilterTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;

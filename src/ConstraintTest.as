@@ -27,6 +27,7 @@ package {
 	import away3d.primitives.Cube;
 	import away3d.primitives.Sphere;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class ConstraintTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
@@ -46,7 +47,6 @@ package {
 			_view = new View3D();
 			this.addChild(_view);
 			this.addChild(new AwayStats(_view));
-			_view.antiAlias = 4;
 			
 			_light = new PointLight();
 			_light.y = 2500;

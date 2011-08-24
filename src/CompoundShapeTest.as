@@ -22,6 +22,7 @@ package {
 	import away3d.primitives.Cube;
 	import away3d.primitives.Sphere;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CompoundShapeTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;

@@ -25,6 +25,7 @@ package {
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class BasicTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
@@ -53,7 +54,6 @@ package {
 			_view.camera.y = _light.y;
 			_view.camera.z = _light.z;
 			_view.camera.rotationX = 25;
-			_view.antiAlias = 4;
 
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();

@@ -22,6 +22,7 @@ package {
 	import away3d.primitives.Cone;
 	import away3d.primitives.Cylinder;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class GravityTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
@@ -117,7 +118,7 @@ package {
 		private function onMouseDown(event : MouseEvent3D) : void {
 			isMouseDown = true;
 			currMousePos = new Vector3D(event.localX, event.localY, -600);
-			stage.addEventListener(Event.ENTER_FRAME, handleGravity);
+			this.addEventListener(Event.ENTER_FRAME, handleGravity);
 		}
 
 		private function onMouseUp(event : MouseEvent3D) : void {
@@ -137,7 +138,7 @@ package {
 			}
 
 			physicsWorld.gravity = new Vector3D(0, 0, 20);
-			stage.removeEventListener(Event.ENTER_FRAME, handleGravity);
+			this.removeEventListener(Event.ENTER_FRAME, handleGravity);
 		}
 
 		private function onMouseMove(event : MouseEvent3D) : void {

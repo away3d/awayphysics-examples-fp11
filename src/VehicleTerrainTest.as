@@ -35,6 +35,7 @@ package {
 	import away3d.entities.Mesh;
 	import away3d.primitives.*;
 
+	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class VehicleTerrainTest extends Sprite {
 		[Embed(source="../embeds/fskin.jpg")]
 		private var CarSkin : Class;
@@ -88,7 +89,6 @@ package {
 			_view.camera.y = 2000;
 			_view.camera.z = -2000;
 			_view.camera.rotationX = 40;
-			_view.antiAlias = 4;
 
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
@@ -157,7 +157,7 @@ package {
 
 			// load car model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('assets/car.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/car.obj'), new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
