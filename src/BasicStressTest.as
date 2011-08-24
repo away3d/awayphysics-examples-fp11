@@ -25,10 +25,6 @@ package {
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 
-	/**
-	 * 
-	 * @author Ringo Blanken http://www.ringo.nl/en/ & Muzer
-	 */
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class BasicStressTest extends Sprite {
 		private var _view : View3D;
