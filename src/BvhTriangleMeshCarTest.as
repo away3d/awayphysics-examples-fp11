@@ -11,14 +11,13 @@ package
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.*;
-	
+
 	import awayphysics.collision.dispatch.AWPCollisionObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.vehicle.*;
 	import awayphysics.plugin.away3d.Away3DMesh;
-	
-	import flash.display.Bitmap;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -70,6 +69,7 @@ package
 			_view.camera.y = 2000;
 			_view.camera.z = -2000;
 			_view.camera.rotationX = 40;
+			_view.antiAlias = 4;
 			
 			
 			//init the physics world

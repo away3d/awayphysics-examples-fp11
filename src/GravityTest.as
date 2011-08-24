@@ -51,6 +51,7 @@ package {
 			_view.camera.lens.far = 10000;
 			_view.camera.y = _light.y;
 			_view.camera.z = _light.z;
+			_view.antiAlias = 4;
 
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
