@@ -16,8 +16,6 @@ package {
 		// 0 = Basistest, 1 = BasisStressTest, 2=Gravity, 3=compoundshape,4= collisionfilter
 		// 5= constraint, 6= vehicle terrain, 7= character walk demo, 8 = bvhTriangleMeshCar
 		private var _selectedDemo : int = 7;
-		
-		
 		// private var _totalDemos		: int = 8;
 		private var _currentDemo : Sprite;
 
@@ -91,7 +89,6 @@ package {
 				init();
 			}
 		}
-
 		/*
 		private function keyDownHandler(event : KeyboardEvent) : void {
 		switch(event.keyCode) {

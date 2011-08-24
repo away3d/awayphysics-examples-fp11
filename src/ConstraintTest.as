@@ -47,7 +47,7 @@ package {
 			_view = new View3D();
 			this.addChild(_view);
 			this.addChild(new AwayStats(_view));
-			
+
 			_light = new PointLight();
 			_light.y = 2500;
 			_light.z = -3000;
