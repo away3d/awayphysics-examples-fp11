@@ -54,7 +54,6 @@ package {
 			_view.camera.y = _light.y;
 			_view.camera.z = _light.z;
 			_view.camera.rotationX = 25;
-			_view.antiAlias = 4;
 
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();

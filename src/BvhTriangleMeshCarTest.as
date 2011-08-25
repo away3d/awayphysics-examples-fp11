@@ -60,7 +60,6 @@ package {
 			_view.camera.y = 2000;
 			_view.camera.z = -2000;
 			_view.camera.rotationX = 40;
-			_view.antiAlias = 4;
 
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
