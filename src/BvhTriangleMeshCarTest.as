@@ -15,7 +15,6 @@ package {
 	import awayphysics.collision.shapes.*;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.vehicle.*;
-	import awayphysics.plugin.away3d.Away3DMesh;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -91,9 +90,9 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
-			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneSkin);
-			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneSkin, 0);
+			// var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
+			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
+			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);
 
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -114,7 +113,7 @@ package {
 						// create boxes
 						mesh = new Cube(material, 200, 200, 200);
 						_view.scene.addChild(mesh);
-						body = new AWPRigidBody(boxShape, new Away3DMesh(mesh), 1);
+						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
 						body.position = new Vector3D(-1500 + i * 200, 200 + k * 200, 1000 + j * 200);
 						physicsWorld.addRigidBody(body);
@@ -138,7 +137,7 @@ package {
 
 			// create the chassis body
 			var carShape : AWPCompoundShape = createCarShape();
-			var carBody : AWPRigidBody = new AWPRigidBody(carShape, new Away3DMesh(Mesh(container.getChildAt(1))), 1200);
+			var carBody : AWPRigidBody = new AWPRigidBody(carShape, container.getChildAt(1), 1200);
 			carBody.activationState = AWPCollisionObject.DISABLE_DEACTIVATION;
 			carBody.friction = 0.9;
 			carBody.linearDamping = 0.1;
@@ -158,10 +157,10 @@ package {
 			physicsWorld.addVehicle(car);
 
 			// add four wheels
-			car.addWheel(new Away3DMesh(Mesh(container.getChildAt(0))), new Vector3D(-110, -40, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, true);
-			car.addWheel(new Away3DMesh(Mesh(container.getChildAt(3))), new Vector3D(110, -40, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, true);
-			car.addWheel(new Away3DMesh(Mesh(container.getChildAt(4))), new Vector3D(-110, -30, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, false);
-			car.addWheel(new Away3DMesh(Mesh(container.getChildAt(2))), new Vector3D(110, -30, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, false);
+			car.addWheel(container.getChildAt(0), new Vector3D(-110, -40, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, true);
+			car.addWheel(container.getChildAt(3), new Vector3D(110, -40, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, true);
+			car.addWheel(container.getChildAt(4), new Vector3D(-110, -30, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, false);
+			car.addWheel(container.getChildAt(2), new Vector3D(110, -30, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 40, 60, turning, false);
 
 			for (i = 0; i < car.getNumWheels(); i++) {
 				var wheel : AWPWheelInfo = car.getWheelInfo(i);

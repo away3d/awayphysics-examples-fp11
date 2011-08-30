@@ -1,31 +1,30 @@
 package {
-	import awayphysics.collision.shapes.AWPConeShape;
-	import awayphysics.collision.shapes.AWPShape;
+	import away3d.containers.View3D;
+	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
+	import away3d.lights.PointLight;
+	import away3d.materials.ColorMaterial;
+	import away3d.primitives.Cone;
+	import away3d.primitives.Cube;
+	import away3d.primitives.Cylinder;
+	import away3d.primitives.Plane;
+	import away3d.primitives.Sphere;
+
 	import awayphysics.collision.shapes.AWPBoxShape;
+	import awayphysics.collision.shapes.AWPConeShape;
 	import awayphysics.collision.shapes.AWPCylinderShape;
+	import awayphysics.collision.shapes.AWPShape;
+	import awayphysics.collision.shapes.AWPSphereShape;
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
-	import awayphysics.collision.shapes.AWPSphereShape;
 	import awayphysics.dynamics.AWPRigidBody;
-	import awayphysics.plugin.away3d.Away3DMesh;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.geom.Vector3D;
 	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
-
-	import away3d.debug.AwayStats;
-	import away3d.containers.View3D;
-	import away3d.lights.PointLight;
-	import away3d.materials.ColorMaterial;
-	import away3d.entities.Mesh;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Cone;
-	import away3d.primitives.Sphere;
-	import away3d.primitives.Cylinder;
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CollisionFilterTest extends Sprite {
@@ -80,7 +79,7 @@ package {
 
 			// create ground shape and rigidbody
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
-			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, new Away3DMesh(ground), 0);
+			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			// make ground collision enabled with other all rigidbodies
 			physicsWorld.addRigidBodyWithGroup(groundRigidbody, collsionGround, collisionAll);
 
@@ -100,7 +99,7 @@ package {
 			mesh = new Cube(material, 600, 600, 600);
 			_view.scene.addChild(mesh);
 			shape = new AWPBoxShape(600, 600, 600);
-			body = new AWPRigidBody(shape, new Away3DMesh(mesh), 1);
+			body = new AWPRigidBody(shape, mesh, 1);
 			body.friction = .9;
 			body.position = new Vector3D(-1000, 300, 0);
 			// make box collision enabled with other all rigidbodies
@@ -110,7 +109,7 @@ package {
 			mesh = new Cylinder(material, 400, 400, 600);
 			_view.scene.addChild(mesh);
 			shape = new AWPCylinderShape(400, 600);
-			body = new AWPRigidBody(shape, new Away3DMesh(mesh), 1);
+			body = new AWPRigidBody(shape, mesh, 1);
 			body.friction = .9;
 			body.position = new Vector3D(0, 300, 0);
 			// make cylinder collision enabled with ground and box
@@ -120,7 +119,7 @@ package {
 			mesh = new Cone(material, 400, 600);
 			_view.scene.addChild(mesh);
 			shape = new AWPConeShape(400, 600);
-			body = new AWPRigidBody(shape, new Away3DMesh(mesh), 1);
+			body = new AWPRigidBody(shape, mesh, 1);
 			body.friction = .9;
 			body.position = new Vector3D(1000, 300, 0);
 			// make Cone collision enabled with ground and box
@@ -133,7 +132,7 @@ package {
 			mesh = new Sphere(material, 200);
 			_view.scene.addChild(mesh);
 			shape = new AWPSphereShape(200);
-			sphereBody = new AWPRigidBody(shape, new Away3DMesh(mesh), 1);
+			sphereBody = new AWPRigidBody(shape, mesh, 1);
 			sphereBody.position = new Vector3D(0, 300, -1000);
 			// make sphere collision enabled with ground and box
 			physicsWorld.addRigidBodyWithGroup(sphereBody, collsionSphere, collsionGround | collsionBox);

@@ -1,13 +1,4 @@
 package {
-	import awayphysics.collision.shapes.AWPBoxShape;
-	import awayphysics.collision.shapes.AWPStaticPlaneShape;
-	import awayphysics.collision.shapes.AWPCylinderShape;
-	import awayphysics.collision.shapes.AWPConeShape;
-	import awayphysics.dynamics.AWPRigidBody;
-	import awayphysics.plugin.away3d.Away3DMesh;
-	import awayphysics.collision.shapes.AWPSphereShape;
-	import awayphysics.dynamics.AWPDynamicsWorld;
-
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
@@ -19,6 +10,14 @@ package {
 	import away3d.primitives.Cylinder;
 	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;
+
+	import awayphysics.collision.shapes.AWPBoxShape;
+	import awayphysics.collision.shapes.AWPConeShape;
+	import awayphysics.collision.shapes.AWPCylinderShape;
+	import awayphysics.collision.shapes.AWPSphereShape;
+	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import awayphysics.dynamics.AWPDynamicsWorld;
+	import awayphysics.dynamics.AWPRigidBody;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -70,7 +69,7 @@ package {
 
 			// create ground shape and rigidbody
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
-			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, new Away3DMesh(ground), 0);
+			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			_physicsWorld.addRigidBody(groundRigidbody);
 
 			// set ground rotation
@@ -83,7 +82,7 @@ package {
 			_view.scene.addChild(wall);
 
 			var wallShape : AWPBoxShape = new AWPBoxShape(20000, 2000, 100);
-			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, new Away3DMesh(wall), 0);
+			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, wall, 0);
 			_physicsWorld.addRigidBody(wallRigidbody);
 
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
@@ -109,7 +108,7 @@ package {
 						// create boxes
 						mesh = new Cube(material, 200, 200, 200);
 						_view.scene.addChild(mesh);
-						body = new AWPRigidBody(boxShape, new Away3DMesh(mesh), 1);
+						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
 						body.position = new Vector3D(-1000 + i * 200, 100 + k * 200, j * 200);
 						_physicsWorld.addRigidBody(body);
@@ -117,7 +116,7 @@ package {
 						// create cylinders
 						mesh = new Cylinder(material, 100, 100, 200);
 						_view.scene.addChild(mesh);
-						body = new AWPRigidBody(cylinderShape, new Away3DMesh(mesh), 1);
+						body = new AWPRigidBody(cylinderShape, mesh, 1);
 						body.friction = .9;
 						body.position = new Vector3D(1000 + i * 200, 100 + k * 200, j * 200);
 						_physicsWorld.addRigidBody(body);
@@ -125,7 +124,7 @@ package {
 						// create the Cones
 						mesh = new Cone(material, 100, 200);
 						_view.scene.addChild(mesh);
-						body = new AWPRigidBody(coneShape, new Away3DMesh(mesh), 1);
+						body = new AWPRigidBody(coneShape, mesh, 1);
 						body.friction = .9;
 						body.position = new Vector3D(i * 200, 100 + k * 230, j * 200);
 						_physicsWorld.addRigidBody(body);
@@ -151,7 +150,7 @@ package {
 			var sphere : Sphere = new Sphere(material, 100);
 			_view.scene.addChild(sphere);
 
-			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, new Away3DMesh(sphere), 2);
+			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, sphere, 2);
 			body.position = pos;
 			_physicsWorld.addRigidBody(body);
 

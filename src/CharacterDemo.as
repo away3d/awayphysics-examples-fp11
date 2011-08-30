@@ -25,7 +25,6 @@ package {
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
 	import awayphysics.events.AWPCollisionEvent;
-	import awayphysics.plugin.away3d.Away3DMesh;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -105,6 +104,7 @@ package {
 			if (event.asset.assetType == AssetType.MESH) {
 				var mesh : Mesh = event.asset as Mesh;
 				mesh.scale(6);
+
 				_view.scene.addChild(mesh);
 
 				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(mesh.animationState));
@@ -117,7 +117,7 @@ package {
 
 				// create character shape and controller
 				var shape : AWPCapsuleShape = new AWPCapsuleShape(150, 500);
-				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, new Away3DMesh(mesh, new Vector3D(0, -65, 20)));
+				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, mesh);
 				ghostObject.collisionFlags = AWPCollisionFlags.CF_CHARACTER_OBJECT;
 				ghostObject.addEventListener(AWPCollisionEvent.COLLISION_ADDED, characterCollisionAdded);
 
@@ -161,9 +161,9 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
-			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneSkin);
-			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneSkin, 0);
+			// var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
+			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
+			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);
 
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -184,7 +184,7 @@ package {
 						// create boxes
 						mesh = new Cube(material, 400, 400, 400);
 						_view.scene.addChild(mesh);
-						body = new AWPRigidBody(boxShape, new Away3DMesh(mesh), 1);
+						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
 						body.position = new Vector3D(-1500 + i * 400, 400 + k * 400, 1000 + j * 400);
 						physicsWorld.addRigidBody(body);

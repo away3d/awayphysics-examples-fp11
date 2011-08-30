@@ -1,26 +1,25 @@
 package {
-	import awayphysics.dynamics.AWPDynamicsWorld;
-	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import away3d.containers.View3D;
+	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
+	import away3d.events.MouseEvent3D;
+	import away3d.lights.PointLight;
+	import away3d.materials.ColorMaterial;
+	import away3d.primitives.Cone;
+	import away3d.primitives.Cube;
+	import away3d.primitives.Cylinder;
+	import away3d.primitives.Plane;
+
+	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;
 	import awayphysics.collision.shapes.AWPCylinderShape;
-	import awayphysics.collision.shapes.AWPBoxShape;
-	import awayphysics.plugin.away3d.Away3DMesh;
+	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Vector3D;
-
-	import away3d.debug.AwayStats;
-	import away3d.containers.View3D;
-	import away3d.lights.PointLight;
-	import away3d.events.MouseEvent3D;
-	import away3d.materials.ColorMaterial;
-	import away3d.entities.Mesh;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Cone;
-	import away3d.primitives.Cylinder;
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class GravityTest extends Sprite {
@@ -70,7 +69,7 @@ package {
 
 			// create ground shape and rigidbody
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
-			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, new Away3DMesh(ground), 0);
+			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
 
 			material = new ColorMaterial(0xe28313);
@@ -88,7 +87,7 @@ package {
 				// create boxes
 				mesh = new Cube(material, 100, 100, 100);
 				_view.scene.addChild(mesh);
-				body = new AWPRigidBody(boxShape, new Away3DMesh(mesh), 1);
+				body = new AWPRigidBody(boxShape, mesh, 1);
 				body.friction = .9;
 				body.linearDamping = .5;
 				body.position = new Vector3D(-1000 + 2000 * Math.random(), -1000 + 2000 * Math.random(), -1000 - 2000 * Math.random());
@@ -97,7 +96,7 @@ package {
 				// create cylinders
 				mesh = new Cylinder(material, 50, 50, 100);
 				_view.scene.addChild(mesh);
-				body = new AWPRigidBody(cylinderShape, new Away3DMesh(mesh), 1);
+				body = new AWPRigidBody(cylinderShape, mesh, 1);
 				body.friction = .9;
 				body.linearDamping = .5;
 				body.position = new Vector3D(-1000 + 2000 * Math.random(), -1000 + 2000 * Math.random(), -1000 - 2000 * Math.random());
@@ -106,7 +105,7 @@ package {
 				// create the Cones
 				mesh = new Cone(material, 50, 100);
 				_view.scene.addChild(mesh);
-				body = new AWPRigidBody(coneShape, new Away3DMesh(mesh), 1);
+				body = new AWPRigidBody(coneShape, mesh, 1);
 				body.friction = .9;
 				body.linearDamping = .5;
 				body.position = new Vector3D(-1000 + 2000 * Math.random(), -1000 + 2000 * Math.random(), -1000 - 2000 * Math.random());

@@ -1,26 +1,25 @@
 package {
+	import away3d.containers.View3D;
+	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
+	import away3d.events.MouseEvent3D;
+	import away3d.lights.PointLight;
+	import away3d.materials.ColorMaterial;
+	import away3d.primitives.Cube;
+	import away3d.primitives.Plane;
+	import away3d.primitives.Sphere;
+
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPCompoundShape;
-	import awayphysics.plugin.away3d.Away3DMesh;
-	import awayphysics.dynamics.AWPRigidBody;
-	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
+	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
+	import awayphysics.dynamics.AWPRigidBody;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.Vector3D;
 	import flash.geom.Matrix3D;
-
-	import away3d.debug.AwayStats;
-	import away3d.containers.View3D;
-	import away3d.lights.PointLight;
-	import away3d.events.MouseEvent3D;
-	import away3d.materials.ColorMaterial;
-	import away3d.entities.Mesh;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Sphere;
+	import flash.geom.Vector3D;
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CompoundShapeTest extends Sprite {
@@ -67,7 +66,7 @@ package {
 
 			// create ground shape and rigidbody
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
-			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, new Away3DMesh(ground), 0);
+			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
 
 			// set ground rotation
@@ -80,7 +79,7 @@ package {
 			_view.scene.addChild(wall);
 
 			var wallShape : AWPBoxShape = new AWPBoxShape(20000, 5000, 100);
-			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, new Away3DMesh(wall), 0);
+			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, wall, 0);
 			physicsWorld.addRigidBody(wallRigidbody);
 
 			wallRigidbody.position = new Vector3D(0, 2500, 2000);
@@ -100,7 +99,7 @@ package {
 			for (var i : int; i < 10; i++ ) {
 				mesh = createChairMesh(material);
 				_view.scene.addChild(mesh);
-				body = new AWPRigidBody(chairShape, new Away3DMesh(mesh), 1);
+				body = new AWPRigidBody(chairShape, mesh, 1);
 				body.friction = .9;
 				body.position = new Vector3D(0, 500 + 1000 * i, 0);
 				physicsWorld.addRigidBody(body);
@@ -168,7 +167,7 @@ package {
 			var sphere : Sphere = new Sphere(material, 100);
 			_view.scene.addChild(sphere);
 
-			var body : AWPRigidBody = new AWPRigidBody(sphereShape, new Away3DMesh(sphere), 2);
+			var body : AWPRigidBody = new AWPRigidBody(sphereShape, sphere, 2);
 			body.position = pos;
 			physicsWorld.addRigidBody(body);
 
