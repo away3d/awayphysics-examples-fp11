@@ -107,8 +107,11 @@ package {
 			if (event.asset.assetType == AssetType.MESH) {
 				_characterMesh = event.asset as Mesh;
 				_characterMesh.scale(6);
+				_characterMesh.y = -400;
 
 				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(_characterMesh.animationState));
+
+				_animationController.updateRootPosition = false;
 
 				var material : BitmapMaterial = new BitmapMaterial(new Skin().bitmapData);
 				material.lights = [_light];
@@ -117,18 +120,19 @@ package {
 				_characterMesh.material = material;
 				
 				var container:ObjectContainer3D=new ObjectContainer3D();
-				_characterMesh.position=new Vector3D(0,-400,0);
 				container.addChild(_characterMesh);
 				_view.scene.addChild(container);
+				
 				/*
 				//use to test bounding shape
-				var color:ColorMaterial=new ColorMaterial(0xffff00);
+				var color:ColorMaterial=new ColorMaterial(0xffff00,0.9);
 				color.lights=[_light];
-				var testMesh:Cylinder=new Cylinder(color,150,150,500);
-				container.addChild(testMesh);*/
+				var testMesh:Cylinder=new Cylinder(color,300,300,500);
+				container.addChild(testMesh);
+				*/
 
 				// create character shape and controller
-				var shape : AWPCapsuleShape = new AWPCapsuleShape(150, 500);
+				var shape : AWPCapsuleShape = new AWPCapsuleShape(300, 500);
 				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, container);
 				ghostObject.collisionFlags = AWPCollisionFlags.CF_CHARACTER_OBJECT;
 				ghostObject.addEventListener(AWPCollisionEvent.COLLISION_ADDED, characterCollisionAdded);
