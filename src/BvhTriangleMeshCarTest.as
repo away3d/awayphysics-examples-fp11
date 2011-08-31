@@ -90,7 +90,6 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			// var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
 			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
 			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);

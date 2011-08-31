@@ -14,7 +14,7 @@ package {
 	import away3d.primitives.Cube;
 	import away3d.primitives.Cylinder;
 
-	import awayphysics.AWPTerrain;
+	import awayphysics.extend.AWPTerrain;
 	import awayphysics.collision.dispatch.AWPCollisionObject;
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPCompoundShape;

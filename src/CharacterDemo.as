@@ -18,14 +18,15 @@ package {
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Cube;
-
+	import away3d.primitives.Cylinder;
+	
 	import awayphysics.collision.dispatch.AWPGhostObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.data.AWPCollisionFlags;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
 	import awayphysics.events.AWPCollisionEvent;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -45,6 +46,8 @@ package {
 		private var _view : View3D;
 		private var _light : PointLight;
 		private var _animationController : SmoothSkeletonAnimator;
+		private var _characterMesh:Mesh;
+		
 		private var physicsWorld : AWPDynamicsWorld;
 		private var character : AWPKinematicCharacterController;
 		private var timeStep : Number = 1.0 / 60;
@@ -102,22 +105,31 @@ package {
 
 		private function onMeshComplete(event : AssetEvent) : void {
 			if (event.asset.assetType == AssetType.MESH) {
-				var mesh : Mesh = event.asset as Mesh;
-				mesh.scale(6);
+				_characterMesh = event.asset as Mesh;
+				_characterMesh.scale(6);
 
-				_view.scene.addChild(mesh);
-
-				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(mesh.animationState));
+				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(_characterMesh.animationState));
 
 				var material : BitmapMaterial = new BitmapMaterial(new Skin().bitmapData);
 				material.lights = [_light];
 				material.normalMap = new Norm().bitmapData;
 				material.specularMap = new Spec().bitmapData;
-				mesh.material = material;
+				_characterMesh.material = material;
+				
+				var container:ObjectContainer3D=new ObjectContainer3D();
+				_characterMesh.position=new Vector3D(0,-400,0);
+				container.addChild(_characterMesh);
+				_view.scene.addChild(container);
+				/*
+				//use to test bounding shape
+				var color:ColorMaterial=new ColorMaterial(0xffff00);
+				color.lights=[_light];
+				var testMesh:Cylinder=new Cylinder(color,150,150,500);
+				container.addChild(testMesh);*/
 
 				// create character shape and controller
 				var shape : AWPCapsuleShape = new AWPCapsuleShape(150, 500);
-				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, mesh);
+				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, container);
 				ghostObject.collisionFlags = AWPCollisionFlags.CF_CHARACTER_OBJECT;
 				ghostObject.addEventListener(AWPCollisionEvent.COLLISION_ADDED, characterCollisionAdded);
 
@@ -161,7 +173,6 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			// var sceneSkin : Away3DMesh = new Away3DMesh(sceneMesh);
 			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
 			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);
@@ -264,6 +275,7 @@ package {
 					character.ghostObject.rotation.copyRowTo(2, walkDirection);
 					walkDirection.scaleBy(-walkSpeed);
 					character.setWalkDirection(walkDirection);
+					_characterMesh.position=new Vector3D(0,-400,0);
 				}
 				if (keyReverse) {
 					if (walkDirection.length == 0) {
@@ -273,6 +285,7 @@ package {
 					character.ghostObject.rotation.copyRowTo(2, walkDirection);
 					walkDirection.scaleBy(walkSpeed);
 					character.setWalkDirection(walkDirection);
+					_characterMesh.position=new Vector3D(0,-400,0);
 				}
 				if (keyUp && character.onGround()) {
 					character.jump();
