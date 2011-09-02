@@ -110,7 +110,6 @@ package {
 				_characterMesh.y = -400;
 
 				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(_characterMesh.animationState));
-
 				_animationController.updateRootPosition = false;
 
 				var material : BitmapMaterial = new BitmapMaterial(new Skin().bitmapData);
@@ -123,13 +122,11 @@ package {
 				container.addChild(_characterMesh);
 				_view.scene.addChild(container);
 				
-				/*
 				//use to test bounding shape
-				var color:ColorMaterial=new ColorMaterial(0xffff00,0.9);
+				var color:ColorMaterial=new ColorMaterial(0xffff00,0.4);
 				color.lights=[_light];
 				var testMesh:Cylinder=new Cylinder(color,300,300,500);
 				container.addChild(testMesh);
-				*/
 
 				// create character shape and controller
 				var shape : AWPCapsuleShape = new AWPCapsuleShape(300, 500);
@@ -279,7 +276,6 @@ package {
 					character.ghostObject.rotation.copyRowTo(2, walkDirection);
 					walkDirection.scaleBy(-walkSpeed);
 					character.setWalkDirection(walkDirection);
-					_characterMesh.position=new Vector3D(0,-400,0);
 				}
 				if (keyReverse) {
 					if (walkDirection.length == 0) {
@@ -289,7 +285,6 @@ package {
 					character.ghostObject.rotation.copyRowTo(2, walkDirection);
 					walkDirection.scaleBy(walkSpeed);
 					character.setWalkDirection(walkDirection);
-					_characterMesh.position=new Vector3D(0,-400,0);
 				}
 				if (keyUp && character.onGround()) {
 					character.jump();
