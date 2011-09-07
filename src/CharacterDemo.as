@@ -273,7 +273,7 @@ package {
 						_animationController.play("walk", 0.5);
 						_animationController.timeScale = 1.2;
 					}
-					character.ghostObject.rotation.copyRowTo(2, walkDirection);
+					character.ghostObject.rotation.copyColumnTo(2, walkDirection);
 					walkDirection.scaleBy(-walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}
@@ -282,7 +282,7 @@ package {
 						_animationController.play("walk", 0.5);
 						_animationController.timeScale = -1.2;
 					}
-					character.ghostObject.rotation.copyRowTo(2, walkDirection);
+					character.ghostObject.rotation.copyColumnTo(2, walkDirection);
 					walkDirection.scaleBy(walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}
