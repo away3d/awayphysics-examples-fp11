@@ -46,7 +46,7 @@ package {
 
 			_light = new PointLight();
 			_light.y = 2500;
-			_light.z = -3000;
+			_light.z = -4000;
 			_view.scene.addChild(_light);
 
 			_view.camera.lens.far = 10000;
@@ -110,6 +110,8 @@ package {
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
+						body.ccdSweptSphereRadius = 0.5;
+						body.ccdMotionThreshold = 1;
 						body.position = new Vector3D(-1000 + i * 200, 100 + k * 200, j * 200);
 						_physicsWorld.addRigidBody(body);
 
@@ -118,6 +120,8 @@ package {
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(cylinderShape, mesh, 1);
 						body.friction = .9;
+						body.ccdSweptSphereRadius = 0.5;
+						body.ccdMotionThreshold = 1;
 						body.position = new Vector3D(1000 + i * 200, 100 + k * 200, j * 200);
 						_physicsWorld.addRigidBody(body);
 
@@ -126,6 +130,8 @@ package {
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(coneShape, mesh, 1);
 						body.friction = .9;
+						body.ccdSweptSphereRadius = 0.5;
+						body.ccdMotionThreshold = 1;
 						body.position = new Vector3D(i * 200, 100 + k * 230, j * 200);
 						_physicsWorld.addRigidBody(body);
 					}
@@ -141,7 +147,7 @@ package {
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(20000);
+			impulse.scaleBy(200000);
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xb35b11);
@@ -152,8 +158,10 @@ package {
 
 			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, sphere, 2);
 			body.position = pos;
+			body.ccdSweptSphereRadius = 0.5;
+			body.ccdMotionThreshold = 1;
 			_physicsWorld.addRigidBody(body);
-
+			
 			body.applyCentralImpulse(impulse);
 		}
 
