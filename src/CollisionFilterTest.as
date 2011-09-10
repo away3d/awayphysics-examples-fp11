@@ -1,4 +1,5 @@
 package {
+	import awayphysics.collision.shapes.AWPCollisionShape;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
@@ -13,7 +14,6 @@ package {
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;
 	import awayphysics.collision.shapes.AWPCylinderShape;
-	import awayphysics.collision.shapes.AWPShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
@@ -92,7 +92,7 @@ package {
 			material.lights = [_light];
 
 			var mesh : Mesh;
-			var shape : AWPShape;
+			var shape : AWPCollisionShape;
 			var body : AWPRigidBody;
 
 			// create boxe
