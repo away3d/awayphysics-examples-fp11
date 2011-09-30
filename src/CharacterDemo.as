@@ -17,6 +17,7 @@ package {
 	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
+	import away3d.primitives.Capsule;
 	import away3d.primitives.Cube;
 	import away3d.primitives.Cylinder;
 	
@@ -125,7 +126,7 @@ package {
 				//use to test bounding shape
 				var color:ColorMaterial=new ColorMaterial(0xffff00,0.4);
 				color.lights=[_light];
-				var testMesh:Cylinder=new Cylinder(color,300,300,500);
+				var testMesh:Capsule=new Capsule(color,300,500);
 				container.addChild(testMesh);
 
 				// create character shape and controller
@@ -174,7 +175,7 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
+			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh.geometry);
 			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);
 

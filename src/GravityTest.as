@@ -9,6 +9,7 @@ package {
 	import away3d.primitives.Cube;
 	import away3d.primitives.Cylinder;
 	import away3d.primitives.Plane;
+	import flash.geom.Matrix3D;
 
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;
@@ -68,9 +69,13 @@ package {
 			_view.scene.addChild(ground);
 
 			// create ground shape and rigidbody
-			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
+			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
+			
+			var rot :Matrix3D = new Matrix3D();
+			rot.appendRotation(-90, new Vector3D(1, 0, 0));
+			groundRigidbody.rotation = rot;
 
 			material = new ColorMaterial(0xe28313);
 			material.lights = [_light];
@@ -116,7 +121,7 @@ package {
 
 		private function onMouseDown(event : MouseEvent3D) : void {
 			isMouseDown = true;
-			currMousePos = new Vector3D(event.localX, event.localY, -600);
+			currMousePos = new Vector3D(event.localX, event.localZ, -600);
 			this.addEventListener(Event.ENTER_FRAME, handleGravity);
 		}
 
@@ -142,7 +147,7 @@ package {
 
 		private function onMouseMove(event : MouseEvent3D) : void {
 			if (isMouseDown) {
-				currMousePos = new Vector3D(event.localX, event.localY, -600);
+				currMousePos = new Vector3D(event.localX, event.localZ, -600);
 			}
 		}
 

@@ -16,11 +16,7 @@ package {
 
 	import awayphysics.extend.AWPTerrain;
 	import awayphysics.collision.dispatch.AWPCollisionObject;
-	import awayphysics.collision.shapes.AWPBoxShape;
-	import awayphysics.collision.shapes.AWPCompoundShape;
-	import awayphysics.collision.shapes.AWPConeShape;
-	import awayphysics.collision.shapes.AWPCylinderShape;
-	import awayphysics.collision.shapes.AWPHeightfieldTerrainShape;
+	import awayphysics.collision.shapes.*;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
 	import awayphysics.dynamics.vehicle.AWPRaycastVehicle;
@@ -86,7 +82,7 @@ package {
 			_light.y = 5000;
 			_view.scene.addChild(_light);
 
-			_view.camera.lens.far = 20000;
+			_view.camera.lens.far = 100000;
 			_view.camera.y = 2000;
 			_view.camera.z = -2000;
 			_view.camera.rotationX = 40;
@@ -110,7 +106,7 @@ package {
 
 			// create the terrain mesh
 			var terrainBMD : Bitmap = new HeightMap();
-			var terrain : AWPTerrain = new AWPTerrain(bmaterial, terrainBMD.bitmapData, 50000, 1200, 50000, 60, 60, 1200, 0, false);
+			var terrain : AWPTerrain = new AWPTerrain(bmaterial, terrainBMD.bitmapData, 50000, 2000, 50000, 60, 60, 2000, 0, false);
 			_view.scene.addChild(terrain);
 
 			// create the terrain shape and rigidbody
@@ -156,11 +152,11 @@ package {
 			carMaterial = new BitmapMaterial(new CarSkin().bitmapData);
 			carMaterial.lights = [_light];
 
-			// load car model
+			 //load car model
 			var _loader : Loader3D = new Loader3D();
 			_loader.load(new URLRequest('../assets/car.obj'), new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
-
+			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
@@ -184,7 +180,7 @@ package {
 			// carBody.friction = 0.95;
 			carBody.linearDamping = 0.1;
 			carBody.angularDamping = 0.1;
-			carBody.position = new Vector3D(0, 1000, 0);
+			carBody.position = new Vector3D(0, 1500, 0);
 			physicsWorld.addRigidBody(carBody);
 
 			// create vehicle
@@ -213,20 +209,6 @@ package {
 			}
 		}
 
-		/*
-		// create chassis mesh, just use to test
-		private function createCarMesh(material:ColorMaterial):Mesh {
-		var mesh:Mesh = new Mesh();
-			
-		var child1:Cube = new Cube(material, 260, 60, 570);
-		var child2:Cube = new Cube(material, 240, 70, 300);
-		child1.position = new Vector3D( 0, -20, 0);
-		child2.position = new Vector3D( 0, 30, -30);
-		mesh.addChild(child1);
-		mesh.addChild(child2);
-			
-		return mesh;
-		}*/
 		// create chassis shape
 		private function createCarShape() : AWPCompoundShape {
 			var boxShape1 : AWPBoxShape = new AWPBoxShape(260, 60, 570);

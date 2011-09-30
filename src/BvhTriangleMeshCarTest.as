@@ -69,7 +69,7 @@ package {
 			_loader.load(new URLRequest('../assets/scene.obj'), new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
-			// load car model
+			 //load car model
 			_loader = new Loader3D();
 			_loader.load(new URLRequest('../assets/car.obj'), new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
@@ -90,7 +90,7 @@ package {
 			sceneMesh.material = materia;
 
 			// create triangle mesh shape
-			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh);
+			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh.geometry);
 			var sceneBody : AWPRigidBody = new AWPRigidBody(sceneShape, sceneMesh, 0);
 			physicsWorld.addRigidBody(sceneBody);
 

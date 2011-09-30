@@ -103,7 +103,7 @@ package {
 			model.geometry.scale(300);
 			model.material = materia;
 			
-			var shape:AWPConvexHullShape = new AWPConvexHullShape(model);
+			var shape:AWPConvexHullShape = new AWPConvexHullShape(model.geometry);
 			var skin:Mesh;
 			var body:AWPRigidBody;
 			for (var i:int = 0; i < 20; i++ ) {
@@ -111,7 +111,7 @@ package {
 				_view.scene.addChild(skin);
 				body = new AWPRigidBody(shape, skin, 1);
 				body.friction=0.9;
-				body.position = new Vector3D(0, 300 + 300 * i, 0);
+				body.position = new Vector3D(0, 1000 + 300 * i, 0);
 				_physicsWorld.addRigidBody(body);
 			}
 		}

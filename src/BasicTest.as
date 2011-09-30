@@ -68,14 +68,9 @@ package {
 			_view.scene.addChild(ground);
 
 			// create ground shape and rigidbody
-			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
+			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			_physicsWorld.addRigidBody(groundRigidbody);
-
-			// set ground rotation
-			var rot : Matrix3D = new Matrix3D();
-			rot.appendRotation(90, new Vector3D(1, 0, 0));
-			groundRigidbody.rotation = rot;
 
 			// create a wall
 			var wall : Cube = new Cube(material, 20000, 2000, 100);
@@ -143,7 +138,7 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localZ, event.localY);
+			var mpos : Vector3D = new Vector3D(event.localX, event.localY, event.localZ);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();

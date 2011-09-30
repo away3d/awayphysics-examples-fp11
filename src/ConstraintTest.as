@@ -71,14 +71,9 @@ package {
 			_view.scene.addChild(ground);
 
 			// create ground shape and rigidbody
-			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 0, -1));
+			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
-
-			// set ground rotation
-			var rot : Matrix3D = new Matrix3D();
-			rot.appendRotation(90, new Vector3D(1, 0, 0));
-			groundRigidbody.rotation = rot;
 
 			material = new ColorMaterial(0xfc6a11);
 			material.lights = [_light];
@@ -139,7 +134,7 @@ package {
 
 			var doorHinge : AWPHingeConstraint = new AWPHingeConstraint(currBody, new Vector3D(-250, 0, 0), new Vector3D(0, 1, 0));
 			doorHinge.setLimit(-Math.PI / 4, Math.PI / 4);
-			// doorHinge.setAngularMotor(true, 10, 20);
+			// doorHinge.setAngularMotor(true, 100, 20);
 			physicsWorld.addConstraint(doorHinge);
 
 			// create a slider use AWPGeneric6DofConstraint
@@ -205,7 +200,7 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localZ, event.localY);
+			var mpos : Vector3D = new Vector3D(event.localX, event.localY, event.localZ);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
