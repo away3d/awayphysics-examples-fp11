@@ -58,7 +58,7 @@ package {
 		private var keyReverse : Boolean = false;
 		private var keyUp : Boolean = false;
 		private var walkDirection : Vector3D = new Vector3D();
-		private var walkSpeed : Number = 10;
+		private var walkSpeed : Number = 0.1;
 		private var chRotation : Number = 0;
 
 		public function CharacterDemo() {
@@ -159,7 +159,7 @@ package {
 			if (!(event.collisionObject.collisionFlags & AWPCollisionFlags.CF_STATIC_OBJECT)) {
 				var body : AWPRigidBody = AWPRigidBody(event.collisionObject);
 				var force : Vector3D = event.manifoldPoint.normalWorldOnB.clone();
-				force.scaleBy(-30);
+				force.scaleBy( -30);
 				body.applyForce(force, event.manifoldPoint.localPointB);
 			}
 		}
@@ -258,23 +258,20 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			if (character) {
-				var rot : Matrix3D = new Matrix3D();
 				if (keyLeft && character.onGround()) {
 					chRotation -= 3;
-					rot.appendRotation(chRotation, new Vector3D(0, 1, 0));
-					character.ghostObject.rotation = rot;
+					character.ghostObject.rotation = new Vector3D(0, chRotation, 0);
 				}
 				if (keyRight && character.onGround()) {
 					chRotation += 3;
-					rot.appendRotation(chRotation, new Vector3D(0, 1, 0));
-					character.ghostObject.rotation = rot;
+					character.ghostObject.rotation = new Vector3D(0, chRotation, 0);
 				}
 				if (keyForward) {
 					if (walkDirection.length == 0) {
 						_animationController.play("walk", 0.5);
 						_animationController.timeScale = 1.2;
 					}
-					character.ghostObject.rotation.copyColumnTo(2, walkDirection);
+					walkDirection = character.ghostObject.front;
 					walkDirection.scaleBy(-walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}
@@ -283,7 +280,7 @@ package {
 						_animationController.play("walk", 0.5);
 						_animationController.timeScale = -1.2;
 					}
-					character.ghostObject.rotation.copyColumnTo(2, walkDirection);
+					walkDirection = character.ghostObject.front;
 					walkDirection.scaleBy(walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}

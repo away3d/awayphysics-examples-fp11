@@ -117,14 +117,13 @@ package {
 			child4.position = new Vector3D(180, -220, 200);
 			child5.position = new Vector3D(-180, -220, 200);
 			child6.position = new Vector3D(0, 250, 250);
-			child6.rotate(new Vector3D(1, 0, 0), 10);
+			child6.rotate(new Vector3D(1, 0, 0), 20);
 			mesh.addChild(child1);
 			mesh.addChild(child2);
 			mesh.addChild(child3);
 			mesh.addChild(child4);
 			mesh.addChild(child5);
 			mesh.addChild(child6);
-
 			return mesh;
 		}
 
@@ -134,15 +133,13 @@ package {
 			var boxShape3 : AWPBoxShape = new AWPBoxShape(400, 500, 60);
 
 			var chairShape : AWPCompoundShape = new AWPCompoundShape();
-			chairShape.addChildShape(boxShape1, new Vector3D(0, 0, 0), new Matrix3D());
-			chairShape.addChildShape(boxShape2, new Vector3D(-180, -220, -200), new Matrix3D());
-			chairShape.addChildShape(boxShape2, new Vector3D(180, -220, -200), new Matrix3D());
-			chairShape.addChildShape(boxShape2, new Vector3D(180, -220, 200), new Matrix3D());
-			chairShape.addChildShape(boxShape2, new Vector3D(-180, -220, 200), new Matrix3D());
+			chairShape.addChildShape(boxShape1, new Vector3D(0, 0, 0), new Vector3D());
+			chairShape.addChildShape(boxShape2, new Vector3D(-180, -220, -200), new Vector3D());
+			chairShape.addChildShape(boxShape2, new Vector3D(180, -220, -200), new Vector3D());
+			chairShape.addChildShape(boxShape2, new Vector3D(180, -220, 200), new Vector3D());
+			chairShape.addChildShape(boxShape2, new Vector3D(-180, -220, 200), new Vector3D());
 
-			var rot : Matrix3D = new Matrix3D();
-			rot.appendRotation(10, new Vector3D(1, 0, 0));
-			chairShape.addChildShape(boxShape3, new Vector3D(0, 250, 250), rot);
+			chairShape.addChildShape(boxShape3, new Vector3D(0, 250, 250), new Vector3D(20, 0, 0));
 
 			return chairShape;
 		}
@@ -153,7 +150,7 @@ package {
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(20000);
+			impulse.scaleBy(200);
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xfc6a11);

@@ -159,7 +159,7 @@ package {
 			generic6Dof.setLinearLimit(new Vector3D(0, 0, 0), new Vector3D(0, 0, 400));
 			generic6Dof.setAngularLimit(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0));
 			generic6Dof.getTranslationalLimitMotor().enableMotorZ = true;
-			generic6Dof.getTranslationalLimitMotor().targetVelocity = new Vector3D(0, 0, 1000);
+			generic6Dof.getTranslationalLimitMotor().targetVelocity = new Vector3D(0, 0, 10);
 			generic6Dof.getTranslationalLimitMotor().maxMotorForce = new Vector3D(0, 0, 5);
 			physicsWorld.addConstraint(generic6Dof, true);
 
@@ -204,7 +204,7 @@ package {
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(20000);
+			impulse.scaleBy(200);
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xb35b11);

@@ -142,7 +142,7 @@ package {
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(200000);
+			impulse.scaleBy(2000);
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xb35b11);

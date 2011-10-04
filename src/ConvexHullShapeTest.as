@@ -104,14 +104,16 @@ package {
 			model.material = materia;
 			
 			var shape:AWPConvexHullShape = new AWPConvexHullShape(model.geometry);
+			shape.localScaling = new Vector3D(1, 2, 0.5);
+			
 			var skin:Mesh;
 			var body:AWPRigidBody;
 			for (var i:int = 0; i < 20; i++ ) {
 				skin = Mesh(model.clone());
 				_view.scene.addChild(skin);
 				body = new AWPRigidBody(shape, skin, 1);
-				body.friction=0.9;
-				body.position = new Vector3D(0, 1000 + 300 * i, 0);
+				body.friction = 0.9;
+				body.position = new Vector3D(0, 500 + 400 * i, 0);
 				_physicsWorld.addRigidBody(body);
 			}
 		}
@@ -122,7 +124,7 @@ package {
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(20000);
+			impulse.scaleBy(200);
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xb35b11);

@@ -73,9 +73,7 @@ package {
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
 			
-			var rot :Matrix3D = new Matrix3D();
-			rot.appendRotation(-90, new Vector3D(1, 0, 0));
-			groundRigidbody.rotation = rot;
+			groundRigidbody.rotation = new Vector3D( -90, 0, 0);
 
 			material = new ColorMaterial(0xe28313);
 			material.lights = [_light];
@@ -137,7 +135,7 @@ package {
 			var impulse : Vector3D;
 			for each (body in physicsWorld.nonStaticRigidBodies) {
 				impulse = body.position.subtract(pos);
-				impulse.scaleBy(500000 / impulse.lengthSquared);
+				impulse.scaleBy(5000 / impulse.lengthSquared);
 				body.applyCentralImpulse(impulse);
 			}
 
