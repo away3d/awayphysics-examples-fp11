@@ -73,8 +73,9 @@ package {
 			_physicsWorld.addRigidBody(groundRigidbody);
 
 			// set ground rotation
-			var rot : Matrix3D = new Matrix3D();
-			rot.appendRotation(90, new Vector3D(1, 0, 0));
+			//var rot : Matrix3D = new Matrix3D();
+			//rot.appendRotation(90, new Vector3D(1, 0, 0));
+			var rot:Vector3D = new Vector3D(90,0,0);
 			groundRigidbody.rotation = rot;
 
 			// create a wall

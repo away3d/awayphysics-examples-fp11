@@ -176,8 +176,8 @@ package {
 			var boxShape2 : AWPBoxShape = new AWPBoxShape(240, 70, 300);
 
 			var carShape : AWPCompoundShape = new AWPCompoundShape();
-			carShape.addChildShape(boxShape1, new Vector3D(0, -20, 0), new Matrix3D());
-			carShape.addChildShape(boxShape2, new Vector3D(0, 30, -30), new Matrix3D());
+			carShape.addChildShape(boxShape1, new Vector3D(0, -20, 0), new Vector3D());
+			carShape.addChildShape(boxShape2, new Vector3D(0, 30, -30), new Vector3D());
 
 			return carShape;
 		}
