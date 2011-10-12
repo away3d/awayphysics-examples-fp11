@@ -66,12 +66,12 @@ package {
 
 			// load scene model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/scene.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/scene.obj'), null,null, new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
 			 //load car model
 			_loader = new Loader3D();
-			_loader.load(new URLRequest('../assets/car.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/car.obj'), null,null, new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);

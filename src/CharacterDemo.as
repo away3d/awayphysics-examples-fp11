@@ -89,7 +89,7 @@ package {
 
 			// load scene model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/scene.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/scene.obj'), null,null, new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
 			// load character mesh
@@ -140,8 +140,8 @@ package {
 				character.warp(new Vector3D(0, 500, -1000));
 
 				AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAnimationComplete);
-				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, null, "idle");
-				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, null, "walk");
+				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, null, new MD5AnimParser()); // "idle");
+				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, null, new MD5AnimParser()); //"walk");
 			}
 		}
 

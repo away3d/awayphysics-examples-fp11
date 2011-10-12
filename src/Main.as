@@ -14,7 +14,7 @@ package {
 		// Setting, change _selectedDemo to 0 till 8
 		// 0 = Basictest, 1 = BasicStressTest, 2=Gravity, 3=compoundshape,4= collisionfilter
 		// 5= constraint, 6= vehicle terrain, 7= character walk demo, 8 = bvhTriangleMeshCar
-		private var _selectedDemo : int = 6;
+		private var _selectedDemo : int = 5;
 		// private var _totalDemos		: int = 8;
 		private var _currentDemo : Sprite;
 

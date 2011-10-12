@@ -86,7 +86,7 @@ package {
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
 			
 			var _loader:Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/convex.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/convex.obj'), null,null, new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onConvexResourceComplete);
 			
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);

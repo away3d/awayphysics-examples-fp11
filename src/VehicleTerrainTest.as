@@ -154,7 +154,7 @@ package {
 
 			 //load car model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/car.obj'), new OBJParser());
+			_loader.load(new URLRequest('../assets/car.obj'), null,null, new OBJParser());
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
