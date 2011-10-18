@@ -7,7 +7,7 @@ package {
 	import away3d.events.MouseEvent3D;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
-	import away3d.loaders.parsers.OBJParser;
+	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Cube;
 	import away3d.primitives.Plane;
@@ -19,6 +19,7 @@ package {
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
+	import awayphysics.debug.AWPDebugDraw;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -32,6 +33,8 @@ package {
 		private var _light : PointLight;
 		private var _physicsWorld : AWPDynamicsWorld;
 		private var _timeStep : Number = 1.0 / 60;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function ConvexHullShapeTest() {
 			if (stage) init();
@@ -59,6 +62,9 @@ package {
 			_physicsWorld = AWPDynamicsWorld.getInstance();
 			_physicsWorld.initWithDbvtBroadphase();
 			_physicsWorld.gravity = new Vector3D(0, -20, 0);
+			
+			debugDraw = new AWPDebugDraw(_view, _physicsWorld);
+			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -85,8 +91,9 @@ package {
 
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
 			
+			Parsers.enableAllBundled();
 			var _loader:Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/convex.obj'), null,null, new OBJParser());
+			_loader.load(new URLRequest('../assets/convex.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onConvexResourceComplete);
 			
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
@@ -143,6 +150,7 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			_physicsWorld.step(_timeStep, 1, _timeStep);
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

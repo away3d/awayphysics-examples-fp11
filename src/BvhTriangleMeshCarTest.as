@@ -6,7 +6,7 @@ package {
 	import away3d.events.LoaderEvent;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
-	import away3d.loaders.parsers.OBJParser;
+	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.*;
@@ -15,6 +15,7 @@ package {
 	import awayphysics.collision.shapes.*;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.vehicle.*;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -38,6 +39,8 @@ package {
 		private var timeStep : Number = 1.0 / 60;
 		private var keyRight : Boolean = false;
 		private var keyLeft : Boolean = false;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function BvhTriangleMeshCarTest() {
 			if (stage) init();
@@ -63,15 +66,20 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
+			
+			Parsers.enableAllBundled();
 
 			// load scene model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/scene.obj'), null,null, new OBJParser());
+			_loader.load(new URLRequest('../assets/scene.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
 			 //load car model
 			_loader = new Loader3D();
-			_loader.load(new URLRequest('../assets/car.obj'), null,null, new OBJParser());
+			_loader.load(new URLRequest('../assets/car.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
 
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -141,7 +149,7 @@ package {
 			carBody.friction = 0.9;
 			carBody.linearDamping = 0.1;
 			carBody.angularDamping = 0.1;
-			carBody.position = new Vector3D(0, 500, -1000);
+			carBody.position = new Vector3D(0, 300, -1000);
 			physicsWorld.addRigidBody(carBody);
 
 			// create vehicle
@@ -259,6 +267,7 @@ package {
 				_view.camera.position = car.getRigidBody().position.add(new Vector3D(0, 2000, -2500));
 				_view.camera.lookAt(car.getRigidBody().position);
 			}
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

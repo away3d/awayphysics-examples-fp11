@@ -18,6 +18,7 @@ package {
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -31,6 +32,8 @@ package {
 		private var _physicsWorld : AWPDynamicsWorld;
 		private var _sphereShape : AWPSphereShape;
 		private var _timeStep : Number = 1.0 / 60;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function BasicTest() {
 			if (stage) init();
@@ -57,6 +60,9 @@ package {
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();
 			_physicsWorld.initWithDbvtBroadphase();
+			
+			debugDraw = new AWPDebugDraw(_view, _physicsWorld);
+			debugDraw.debugMode |= AWPDebugDraw.DBG_DrawTransform;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -78,8 +84,8 @@ package {
 
 			var wallShape : AWPBoxShape = new AWPBoxShape(20000, 2000, 100);
 			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, wall, 0);
-			_physicsWorld.addRigidBody(wallRigidbody);
-
+			_physicsWorld.addRigidBody(wallRigidbody);			
+			
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
 
 			material = new ColorMaterial(0xfc6a11);
@@ -102,7 +108,7 @@ package {
 					for (var k : int = 0; k < numy; k++ ) {
 						// create boxes
 						mesh = new Cube(material, 200, 200, 200);
-						_view.scene.addChild(mesh);
+						//_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
 						body.ccdSweptSphereRadius = 0.5;
@@ -112,7 +118,7 @@ package {
 
 						// create cylinders
 						mesh = new Cylinder(material, 100, 100, 200);
-						_view.scene.addChild(mesh);
+						//_view.scene.addChild(mesh);
 						body = new AWPRigidBody(cylinderShape, mesh, 1);
 						body.friction = .9;
 						body.ccdSweptSphereRadius = 0.5;
@@ -122,7 +128,7 @@ package {
 
 						// create the Cones
 						mesh = new Cone(material, 100, 200);
-						_view.scene.addChild(mesh);
+						//_view.scene.addChild(mesh);
 						body = new AWPRigidBody(coneShape, mesh, 1);
 						body.friction = .9;
 						body.ccdSweptSphereRadius = 0.5;
@@ -132,7 +138,7 @@ package {
 					}
 				}
 			}
-
+			
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 
@@ -149,7 +155,7 @@ package {
 			material.lights = [_light];
 
 			var sphere : Sphere = new Sphere(material, 100);
-			_view.scene.addChild(sphere);
+			//_view.scene.addChild(sphere);
 
 			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, sphere, 2);
 			body.position = pos;
@@ -162,6 +168,8 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			_physicsWorld.step(_timeStep, 1, _timeStep);
+			
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

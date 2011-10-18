@@ -6,7 +6,7 @@ package {
 	import away3d.events.LoaderEvent;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
-	import away3d.loaders.parsers.OBJParser;
+	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.TerrainDiffuseMethod;
@@ -153,8 +153,9 @@ package {
 			carMaterial.lights = [_light];
 
 			 //load car model
+			 Parsers.enableAllBundled();
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/car.obj'), null,null, new OBJParser());
+			_loader.load(new URLRequest('../assets/car.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);

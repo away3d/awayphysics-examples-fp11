@@ -18,6 +18,7 @@ package {
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -44,6 +45,8 @@ package {
 		private var keyLeft : Boolean = false;
 		private var keyForward : Boolean = false;
 		private var keyReverse : Boolean = false;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function CollisionFilterTest() {
 			if (stage) init();
@@ -70,6 +73,9 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+		//	debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -190,6 +196,7 @@ package {
 			}
 
 			physicsWorld.step(timeStep);
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

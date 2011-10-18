@@ -17,6 +17,7 @@ package {
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -30,6 +31,8 @@ package {
 		private var timeStep : Number = 1.0 / 60;
 		private var isMouseDown : Boolean;
 		private var currMousePos : Vector3D;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function GravityTest() {
 			if (stage) init();
@@ -56,6 +59,9 @@ package {
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
 			physicsWorld.gravity = new Vector3D(0, 0, 20);
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -162,6 +168,7 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			physicsWorld.step(timeStep);
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

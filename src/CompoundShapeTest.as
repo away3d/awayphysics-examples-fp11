@@ -15,6 +15,7 @@ package {
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -28,6 +29,8 @@ package {
 		private var physicsWorld : AWPDynamicsWorld;
 		private var sphereShape : AWPSphereShape;
 		private var timeStep : Number = 1.0 / 60;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function CompoundShapeTest() {
 			if (stage) init();
@@ -54,6 +57,9 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
@@ -84,7 +90,6 @@ package {
 
 			// create chair shape
 			var chairShape : AWPCompoundShape = createChairShape();
-
 			material = new ColorMaterial(0xe28313);
 			material.lights = [_light];
 
@@ -168,6 +173,7 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			physicsWorld.step(timeStep);
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}

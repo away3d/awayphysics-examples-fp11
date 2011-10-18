@@ -15,6 +15,7 @@ package {
 	import away3d.loaders.parsers.MD5AnimParser;
 	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.loaders.parsers.OBJParser;
+	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Capsule;
@@ -27,6 +28,7 @@ package {
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
 	import awayphysics.events.AWPCollisionEvent;
+	import awayphysics.debug.AWPDebugDraw;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -60,6 +62,8 @@ package {
 		private var walkDirection : Vector3D = new Vector3D();
 		private var walkSpeed : Number = 0.1;
 		private var chRotation : Number = 0;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function CharacterDemo() {
 			if (stage) init();
@@ -86,10 +90,15 @@ package {
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
 			physicsWorld.collisionCallbackOn = true;
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
+			Parsers.enableAllBundled();
+			
 			// load scene model
 			var _loader : Loader3D = new Loader3D();
-			_loader.load(new URLRequest('../assets/scene.obj'), null,null, new OBJParser());
+			_loader.load(new URLRequest('../assets/scene.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
 			// load character mesh
@@ -140,19 +149,21 @@ package {
 				character.warp(new Vector3D(0, 500, -1000));
 
 				AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAnimationComplete);
-				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, null, new MD5AnimParser()); // "idle");
-				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, null, new MD5AnimParser()); //"walk");
+				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, "idle");
+				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, "walk");
 			}
 		}
 
 		private function onAnimationComplete(event : AssetEvent) : void {
-			var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
-			if (seq) {
-				seq.name = event.asset.assetNamespace;
-				_animationController.addSequence(seq);
+			if(event.asset.assetType==AssetType.ANIMATION){
+				var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
+				if (seq) {
+					seq.name = event.asset.assetNamespace;
+					_animationController.addSequence(seq);
+				}
+				if (event.asset.assetNamespace == "idle")
+					_animationController.play("idle", 0.5);
 			}
-			if (event.asset.assetNamespace == "idle")
-				_animationController.play("idle", 0.5);
 		}
 
 		private function characterCollisionAdded(event : AWPCollisionEvent) : void {
@@ -292,6 +303,7 @@ package {
 			}
 
 			physicsWorld.step(timeStep);
+			debugDraw.debugDrawWorld();
 			_view.render();
 		}
 	}
