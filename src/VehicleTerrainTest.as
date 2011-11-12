@@ -27,7 +27,6 @@ package {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.net.URLRequest;
 	import flash.ui.Keyboard;
@@ -176,9 +175,8 @@ package {
 
 			// create the chassis body
 			var carShape : AWPCompoundShape = createCarShape();
-			var carBody : AWPRigidBody = new AWPRigidBody(carShape, container.getChildAt(1), 1200);
+			var carBody : AWPRigidBody = new AWPRigidBody(carShape, container.getChildAt(4), 1200);
 			carBody.activationState = AWPCollisionObject.DISABLE_DEACTIVATION;
-			// carBody.friction = 0.95;
 			carBody.linearDamping = 0.1;
 			carBody.angularDamping = 0.1;
 			carBody.position = new Vector3D(0, 1500, 0);
@@ -196,10 +194,10 @@ package {
 			physicsWorld.addVehicle(car);
 
 			// add four wheels
-			car.addWheel(container.getChildAt(0), new Vector3D(-110, -50, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, true);
-			car.addWheel(container.getChildAt(3), new Vector3D(110, -50, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, true);
-			car.addWheel(container.getChildAt(4), new Vector3D(-110, -40, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, false);
-			car.addWheel(container.getChildAt(2), new Vector3D(110, -40, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, false);
+			car.addWheel(container.getChildAt(0), new Vector3D(-110, 80, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, true);
+			car.addWheel(container.getChildAt(3), new Vector3D(110, 80, 170), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, true);
+			car.addWheel(container.getChildAt(1), new Vector3D(-110, 90, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, false);
+			car.addWheel(container.getChildAt(2), new Vector3D(110, 90, -210), new Vector3D(0, -1, 0), new Vector3D(-1, 0, 0), 50, 100, turning, false);
 
 			for (i = 0; i < car.getNumWheels(); i++) {
 				var wheel : AWPWheelInfo = car.getWheelInfo(i);
@@ -216,8 +214,8 @@ package {
 			var boxShape2 : AWPBoxShape = new AWPBoxShape(240, 70, 300);
 
 			var carShape : AWPCompoundShape = new AWPCompoundShape();
-			carShape.addChildShape(boxShape1, new Vector3D(0, -20, 0), new Vector3D());
-			carShape.addChildShape(boxShape2, new Vector3D(0, 30, -30), new Vector3D());
+			carShape.addChildShape(boxShape1, new Vector3D(0, 100, 0), new Vector3D());
+			carShape.addChildShape(boxShape2, new Vector3D(0, 150, -30), new Vector3D());
 
 			return carShape;
 		}

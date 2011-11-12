@@ -22,7 +22,6 @@ package {
 
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]

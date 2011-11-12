@@ -1,4 +1,5 @@
 package {
+	import flash.trace.Trace;
 	import away3d.animators.SmoothSkeletonAnimator;
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.data.SkeletonAnimationState;
@@ -25,10 +26,11 @@ package {
 	import awayphysics.collision.dispatch.AWPGhostObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.data.AWPCollisionFlags;
+	import awayphysics.data.AWPCollisionFilterGroups;
+	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
-	import awayphysics.events.AWPCollisionEvent;
-	import awayphysics.debug.AWPDebugDraw;
+	import awayphysics.events.AWPEvent;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -80,7 +82,7 @@ package {
 			_light = new PointLight();
 			_light.y = 5000;
 			_view.scene.addChild(_light);
-
+			
 			_view.camera.lens.far = 20000;
 			_view.camera.y = _light.y;
 			_view.camera.z = _light.z;
@@ -142,12 +144,12 @@ package {
 				var shape : AWPCapsuleShape = new AWPCapsuleShape(300, 500);
 				var ghostObject : AWPGhostObject = new AWPGhostObject(shape, container);
 				ghostObject.collisionFlags = AWPCollisionFlags.CF_CHARACTER_OBJECT;
-				ghostObject.addEventListener(AWPCollisionEvent.COLLISION_ADDED, characterCollisionAdded);
+				ghostObject.addEventListener(AWPEvent.COLLISION_ADDED, characterCollisionAdded);
 
 				character = new AWPKinematicCharacterController(ghostObject, shape, 0.1);
 				physicsWorld.addCharacter(character);
 				character.warp(new Vector3D(0, 500, -1000));
-
+				
 				AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAnimationComplete);
 				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, "idle");
 				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, "walk");
@@ -166,7 +168,7 @@ package {
 			}
 		}
 
-		private function characterCollisionAdded(event : AWPCollisionEvent) : void {
+		private function characterCollisionAdded(event : AWPEvent) : void {
 			if (!(event.collisionObject.collisionFlags & AWPCollisionFlags.CF_STATIC_OBJECT)) {
 				var body : AWPRigidBody = AWPRigidBody(event.collisionObject);
 				var force : Vector3D = event.manifoldPoint.normalWorldOnB.clone();
@@ -268,6 +270,8 @@ package {
 		}
 
 		private function handleEnterFrame(e : Event) : void {
+			physicsWorld.step(timeStep);
+			
 			if (character) {
 				if (keyLeft && character.onGround()) {
 					chRotation -= 3;
@@ -301,10 +305,9 @@ package {
 				_view.camera.position = character.ghostObject.position.add(new Vector3D(0, 2000, -2500));
 				_view.camera.lookAt(character.ghostObject.position);
 			}
-
-			physicsWorld.step(timeStep);
-			debugDraw.debugDrawWorld();
+			
 			_view.render();
+			debugDraw.debugDrawWorld();
 		}
 	}
 }
