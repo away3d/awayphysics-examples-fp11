@@ -9,7 +9,6 @@ package {
 	import away3d.primitives.Cube;
 	import away3d.primitives.Cylinder;
 	import away3d.primitives.Plane;
-	import flash.geom.Matrix3D;
 
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;

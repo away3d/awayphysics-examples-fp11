@@ -87,8 +87,9 @@ package {
 			
 			wallRigidbody.position = new Vector3D(0, 1000, 2000);
 
-			material = new ColorMaterial(0xfc6a11);
-			material.lights = [_light];
+			//material = new ColorMaterial(0xfc6a11);
+			//material.lightPicker = new LightPickerBase();
+			
 
 			// create rigidbody shapes
 			_sphereShape = new AWPSphereShape(100);

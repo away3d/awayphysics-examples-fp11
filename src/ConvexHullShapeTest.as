@@ -10,20 +10,17 @@ package {
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Cube;
-	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;
 	
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConvexHullShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
-	import awayphysics.collision.shapes.AWPStaticPlaneShape;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
 	import awayphysics.debug.AWPDebugDraw;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.net.URLRequest;
 

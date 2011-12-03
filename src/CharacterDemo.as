@@ -1,5 +1,4 @@
 package {
-	import flash.trace.Trace;
 	import away3d.animators.SmoothSkeletonAnimator;
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.data.SkeletonAnimationState;
@@ -15,18 +14,15 @@ package {
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.parsers.MD5AnimParser;
 	import away3d.loaders.parsers.MD5MeshParser;
-	import away3d.loaders.parsers.OBJParser;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
 	import away3d.primitives.Capsule;
 	import away3d.primitives.Cube;
-	import away3d.primitives.Cylinder;
-	
+
 	import awayphysics.collision.dispatch.AWPGhostObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.data.AWPCollisionFlags;
-	import awayphysics.data.AWPCollisionFilterGroups;
 	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
@@ -35,7 +31,6 @@ package {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.net.URLRequest;
 	import flash.ui.Keyboard;
