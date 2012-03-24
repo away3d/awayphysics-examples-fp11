@@ -1,15 +1,15 @@
 package {
+	import away3d.materials.methods.FilteredShadowMapMethod;
+	import away3d.primitives.ConeGeometry;
+	import away3d.primitives.CylinderGeometry;
+	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.lights.DirectionalLight;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.PlaneGeometry;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
-	import away3d.events.MouseEvent3D;
-	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cone;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Cylinder;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Sphere;
 
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;
@@ -23,47 +23,64 @@ package {
 	import flash.events.Event;
 	import flash.geom.Vector3D;
 
-	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
+	[SWF(backgroundColor="#ffffff", frameRate="60", width="1024", height="768")]
 	public class BasicStressTest extends Sprite {
 		private var _view : View3D;
-		private var _light : PointLight;
 		private var _physicsWorld : AWPDynamicsWorld;
 		private var _sphereShape : AWPSphereShape;
 		private var _timeStep : Number = 1.0 / 60;
+
+		//light objects
+		private var _sunLight:DirectionalLight;
+		private var _lightPicker:StaticLightPicker;
 
 		public function BasicStressTest() {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
+
+		private function initLights():void
+		{
+			_sunLight = new DirectionalLight(-300, -300, -500);
+			_sunLight.color = 0xfffdc5;
+			_sunLight.ambient = 1;
+			_view.scene.addChild(_sunLight);
+			
+			_lightPicker = new StaticLightPicker([_sunLight]);
+		}
+
+
 		private function init(e : Event = null) : void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
 			_view = new View3D();
+			_view.antiAlias = 4;
 			this.addChild(_view);
 			this.addChild(new AwayStats(_view));
 
-			_light = new PointLight();
-			_light.y = 2500;
-			_light.z = -3000;
-			_view.scene.addChild(_light);
+			initLights();
 
-			_view.camera.lens.far = 10000;
-			_view.camera.y = _light.y;
-			_view.camera.z = _light.z;
+			_view.camera.lens.far = 5000;
+			_view.camera.x = 1000;
+			_view.camera.y = 500;
+			_view.camera.z = -3000;
 			_view.camera.rotationX = 25;
 
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();
 			_physicsWorld.initWithDbvtBroadphase();
+			_physicsWorld.gravity = new Vector3D(0,-40,0);
+
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lights = [_light];
-			var ground : Plane = new Plane(material, 50000, 50000);
-			ground.mouseEnabled = true;
-			ground.mouseDetails = true;
-			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
+			material.shadowMethod = new FilteredShadowMapMethod(_sunLight);
+			material.lightPicker = _lightPicker;
+			var ground : Mesh = new Mesh();
+			ground.geometry = new PlaneGeometry(10000, 10000,1,1,false);
+			ground.castsShadows = true;
+			ground.material = material;
 			_view.scene.addChild(ground);
 
 			// create ground shape and rigidbody
@@ -72,41 +89,37 @@ package {
 			_physicsWorld.addRigidBody(groundRigidbody);
 
 			// set ground rotation
-			//var rot : Matrix3D = new Matrix3D();
-			//rot.appendRotation(90, new Vector3D(1, 0, 0));
 			var rot:Vector3D = new Vector3D(90,0,0);
 			groundRigidbody.rotation = rot;
 
-			// create a wall
-			var wall : Cube = new Cube(material, 20000, 2000, 100);
-			_view.scene.addChild(wall);
-
-			var wallShape : AWPBoxShape = new AWPBoxShape(20000, 2000, 100);
-			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, wall, 0);
-			_physicsWorld.addRigidBody(wallRigidbody);
-
-			wallRigidbody.position = new Vector3D(0, 1000, 2000);
-
 			material = new ColorMaterial(0xfc6a11);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
+			material.shadowMethod = new FilteredShadowMapMethod(_sunLight);
 
 			// create rigidbody shapes
 			_sphereShape = new AWPSphereShape(100);
-			var boxShape : AWPBoxShape = new AWPBoxShape(200, 200, 200);
-			var cylinderShape : AWPCylinderShape = new AWPCylinderShape(100, 200);
-			var coneShape : AWPConeShape = new AWPConeShape(100, 200);
+			var boxShape : AWPBoxShape = new AWPBoxShape(100, 100, 100);
+			var cylinderShape : AWPCylinderShape = new AWPCylinderShape(50, 100);
+			var coneShape : AWPConeShape = new AWPConeShape(50, 100);
+
+			// create geometry
+			var boxGeometry:CubeGeometry = new CubeGeometry(100, 100, 100);
+			var cylinderGeometry:CylinderGeometry = new CylinderGeometry(50,50,100); 
+			var coneGeometry:ConeGeometry= new ConeGeometry(50,100);
 
 			// create rigidbodies
 			var mesh : Mesh;
 			var body : AWPRigidBody;
 			var numx : int = 10;
-			var numy : int = 8;
+			var numy : int = 10;
 			var numz : int = 1;
 			for (var i : int = 0; i < numx; i++ ) {
 				for (var j : int = 0; j < numz; j++ ) {
 					for (var k : int = 0; k < numy; k++ ) {
 						// create boxes
-						mesh = new Cube(material, 200, 200, 200);
+						mesh = new Mesh();
+						mesh.geometry = boxGeometry;
+						mesh.material = material;
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
@@ -114,7 +127,9 @@ package {
 						_physicsWorld.addRigidBody(body);
 
 						// create cylinders
-						mesh = new Cylinder(material, 100, 100, 200);
+						mesh = new Mesh();
+						mesh.geometry = cylinderGeometry;
+						mesh.material = material;
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(cylinderShape, mesh, 1);
 						body.friction = .9;
@@ -122,7 +137,9 @@ package {
 						_physicsWorld.addRigidBody(body);
 
 						// create the Cones
-						mesh = new Cone(material, 100, 200);
+						mesh = new Mesh();
+						mesh.geometry = coneGeometry;
+						mesh.material = material;
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(coneShape, mesh, 1);
 						body.friction = .9;
@@ -133,28 +150,6 @@ package {
 			}
 
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
-		}
-
-		private function onMouseUp(event : MouseEvent3D) : void {
-			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localZ, event.localY);
-
-			var impulse : Vector3D = mpos.subtract(pos);
-			impulse.normalize();
-			impulse.scaleBy(20000);
-
-			// shoot a sphere
-			var material : ColorMaterial = new ColorMaterial(0xb35b11);
-			material.lights = [_light];
-
-			var sphere : Sphere = new Sphere(material, 100);
-			_view.scene.addChild(sphere);
-
-			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, sphere, 2);
-			body.position = pos;
-			_physicsWorld.addRigidBody(body);
-
-			body.applyCentralImpulse(impulse);
 		}
 
 		private function handleEnterFrame(e : Event) : void {

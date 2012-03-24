@@ -1,24 +1,25 @@
 package {
-	import awayphysics.collision.shapes.AWPCollisionShape;
+	import away3d.primitives.SphereGeometry;
+	import away3d.primitives.ConeGeometry;
+	import away3d.primitives.CylinderGeometry;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.PlaneGeometry;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cone;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Cylinder;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Sphere;
 
 	import awayphysics.collision.shapes.AWPBoxShape;
+	import awayphysics.collision.shapes.AWPCollisionShape;
 	import awayphysics.collision.shapes.AWPConeShape;
 	import awayphysics.collision.shapes.AWPCylinderShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
-	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -44,6 +45,8 @@ package {
 		private var keyLeft : Boolean = false;
 		private var keyForward : Boolean = false;
 		private var keyReverse : Boolean = false;
+		
+		private var _lightPicker : StaticLightPicker;
 		
 		private var debugDraw:AWPDebugDraw;
 
@@ -72,14 +75,19 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
+			physicsWorld.gravity = new Vector3D(0,-20,0);
+
+			_lightPicker = new StaticLightPicker([_light]);
+			
 			
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
-		//	debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lights = [_light];
-			var ground : Plane = new Plane(material, 50000, 50000);
+			material.lightPicker = _lightPicker;
+			var ground : Mesh = new Mesh();
+			ground.geometry = new PlaneGeometry(50000, 50000);
+			ground.material = material;
 			_view.scene.addChild(ground);
 
 			// create ground shape and rigidbody
@@ -89,14 +97,16 @@ package {
 			physicsWorld.addRigidBodyWithGroup(groundRigidbody, collsionGround, collisionAll);
 
 			material = new ColorMaterial(0xfc6a11);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
 
 			var mesh : Mesh;
 			var shape : AWPCollisionShape;
 			var body : AWPRigidBody;
 
-			// create boxe
-			mesh = new Cube(material, 600, 600, 600);
+			// create box
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(600, 600, 600);
+			mesh.material = material;
 			_view.scene.addChild(mesh);
 			shape = new AWPBoxShape(600, 600, 600);
 			body = new AWPRigidBody(shape, mesh, 1);
@@ -106,7 +116,9 @@ package {
 			physicsWorld.addRigidBodyWithGroup(body, collsionBox, collisionAll);
 
 			// create cylinder
-			mesh = new Cylinder(material, 400, 400, 600);
+			mesh = new Mesh();
+			mesh.geometry = new CylinderGeometry(400, 400, 600);
+			mesh.material = material;
 			_view.scene.addChild(mesh);
 			shape = new AWPCylinderShape(400, 600);
 			body = new AWPRigidBody(shape, mesh, 1);
@@ -116,7 +128,10 @@ package {
 			physicsWorld.addRigidBodyWithGroup(body, collsionCylinder, collsionGround | collsionBox);
 
 			// create the Cone
-			mesh = new Cone(material, 400, 600);
+			mesh = new Mesh();
+			mesh.geometry = new ConeGeometry(400, 600);
+			mesh.material = material;
+			
 			_view.scene.addChild(mesh);
 			shape = new AWPConeShape(400, 600);
 			body = new AWPRigidBody(shape, mesh, 1);
@@ -125,11 +140,14 @@ package {
 			// make Cone collision enabled with ground and box
 			physicsWorld.addRigidBodyWithGroup(body, collsionCone, collsionGround | collsionBox);
 
-			material = new ColorMaterial(0xb35b11);
-			material.lights = [_light];
+			material = new ColorMaterial(0xffffff);
+			material.lightPicker = _lightPicker;
 
 			// create the Sphere
-			mesh = new Sphere(material, 200);
+			mesh = new Mesh();
+			mesh.geometry = new SphereGeometry(200);
+			mesh.material = material;
+			
 			_view.scene.addChild(mesh);
 			shape = new AWPSphereShape(200);
 			sphereBody = new AWPRigidBody(shape, mesh, 1);

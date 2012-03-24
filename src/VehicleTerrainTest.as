@@ -1,4 +1,6 @@
 package {
+	import away3d.materials.TextureMaterial;
+	import away3d.textures.BitmapTexture;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
@@ -7,14 +9,13 @@ package {
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.TerrainDiffuseMethod;
-	import away3d.primitives.Cone;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Cylinder;
+	import away3d.primitives.ConeGeometry;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.CylinderGeometry;
 
-	import awayphysics.extend.AWPTerrain;
 	import awayphysics.collision.dispatch.AWPCollisionObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.dynamics.AWPDynamicsWorld;
@@ -22,6 +23,7 @@ package {
 	import awayphysics.dynamics.vehicle.AWPRaycastVehicle;
 	import awayphysics.dynamics.vehicle.AWPVehicleTuning;
 	import awayphysics.dynamics.vehicle.AWPWheelInfo;
+	import awayphysics.extend.AWPTerrain;
 
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -55,7 +57,7 @@ package {
 		private var BeachBlend : Class;
 		private var _view : View3D;
 		private var _light : PointLight;
-		private var carMaterial : BitmapMaterial;
+		private var carMaterial : TextureMaterial;
 		private var physicsWorld : AWPDynamicsWorld;
 		private var timeStep : Number = 1.0 / 60;
 		private var car : AWPRaycastVehicle;
@@ -64,6 +66,8 @@ package {
 		private var _vehicleSteering : Number = 0;
 		private var keyRight : Boolean = false;
 		private var keyLeft : Boolean = false;
+		private var _lightPicker : StaticLightPicker;
+		private var _terrainMethod : TerrainDiffuseMethod;
 
 		public function VehicleTerrainTest() {
 			if (stage) init();
@@ -89,19 +93,18 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
+			physicsWorld.gravity = new Vector3D(0, -20, 0);
 
-			var terrainMethod : TerrainDiffuseMethod = new TerrainDiffuseMethod();
-			terrainMethod.setSplattingLayer(0, new Grass().bitmapData, new GrassBlend().bitmapData, 150);
-			terrainMethod.setSplattingLayer(1, new Rock().bitmapData, new RockBlend().bitmapData, 100);
-			terrainMethod.setSplattingLayer(2, new Beach().bitmapData, new BeachBlend().bitmapData, 50);
-			terrainMethod.normalizeSplats();
+			_lightPicker = new StaticLightPicker([_light]);
 
-			var bmaterial : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
-			bmaterial.diffuseMethod = terrainMethod;
-			bmaterial.normalMap = new Normals().bitmapData;
+			
+			_terrainMethod = new TerrainDiffuseMethod([new BitmapTexture(new Beach().bitmapData), new BitmapTexture(new Grass().bitmapData), new BitmapTexture(new Beach().bitmapData)], new BitmapTexture(new Rock().bitmapData), [1, 50, 150, 100]);
+			
+			var bmaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(new Albedo().bitmapData));
+			bmaterial.diffuseMethod = _terrainMethod;
+			bmaterial.normalMap = new BitmapTexture(new Normals().bitmapData);
 			bmaterial.ambientColor = 0x202030;
 			bmaterial.specular = .2;
-			// bmaterial.lights = [_light];
 
 			// create the terrain mesh
 			var terrainBMD : Bitmap = new HeightMap();
@@ -114,7 +117,7 @@ package {
 			physicsWorld.addRigidBody(terrainBody);
 
 			var material : ColorMaterial = new ColorMaterial(0xfc6a11);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
 
 			// create rigidbody shapes
 			var boxShape : AWPBoxShape = new AWPBoxShape(200, 200, 200);
@@ -127,36 +130,44 @@ package {
 			var body : AWPRigidBody;
 			for (var i : int = 0; i < 10; i++ ) {
 				// create boxes
-				mesh = new Cube(material, 200, 200, 200);
+				mesh = new Mesh();
+				mesh.geometry = new CubeGeometry(200, 200, 200);
+				mesh.material = material;
+
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(boxShape, mesh, 1);
 				body.position = new Vector3D(-5000 + 10000 * Math.random(), 1000 + 1000 * Math.random(), -5000 + 10000 * Math.random());
 				physicsWorld.addRigidBody(body);
 
 				// create cylinders
-				mesh = new Cylinder(material, 100, 100, 200);
+				mesh = new Mesh();
+				mesh.geometry = new CylinderGeometry(100, 100, 200);
+				mesh.material = material;
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(cylinderShape, mesh, 1);
 				body.position = new Vector3D(-5000 + 10000 * Math.random(), 1000 + 1000 * Math.random(), -5000 + 10000 * Math.random());
 				physicsWorld.addRigidBody(body);
 
 				// create the Cones
-				mesh = new Cone(material, 100, 200);
+				mesh = new Mesh();
+				mesh.geometry = new ConeGeometry(100, 200);
+				mesh.material = material;
+
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(coneShape, mesh, 1);
 				body.position = new Vector3D(-5000 + 10000 * Math.random(), 1000 + 1000 * Math.random(), -5000 + 10000 * Math.random());
 				physicsWorld.addRigidBody(body);
 			}
 
-			carMaterial = new BitmapMaterial(new CarSkin().bitmapData);
-			carMaterial.lights = [_light];
+			carMaterial = new TextureMaterial(new BitmapTexture(new CarSkin().bitmapData));
+			carMaterial.lightPicker = _lightPicker;
 
-			 //load car model
-			 Parsers.enableAllBundled();
+			// load car model
+			Parsers.enableAllBundled();
 			var _loader : Loader3D = new Loader3D();
 			_loader.load(new URLRequest('../assets/car.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
-			
+
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);

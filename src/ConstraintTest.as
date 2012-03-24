@@ -1,24 +1,25 @@
 package {
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.SphereGeometry;
+	import away3d.primitives.PlaneGeometry;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.Cube;
-	import away3d.primitives.Plane;
-	import away3d.primitives.Sphere;
 
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
 	import awayphysics.dynamics.constraintsolver.AWPConeTwistConstraint;
 	import awayphysics.dynamics.constraintsolver.AWPGeneric6DofConstraint;
 	import awayphysics.dynamics.constraintsolver.AWPHingeConstraint;
 	import awayphysics.dynamics.constraintsolver.AWPPoint2PointConstraint;
-	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -34,6 +35,9 @@ package {
 		private var sphereShape : AWPSphereShape;
 		private var timeStep : Number = 1.0 / 60;
 		private var generic6Dof : AWPGeneric6DofConstraint;
+
+		private var _lightPicker : StaticLightPicker;
+
 		
 		private var debugDraw:AWPDebugDraw;
 
@@ -62,16 +66,21 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
-			
+			physicsWorld.gravity = new Vector3D(0,-20,0);
+
+			_lightPicker = new StaticLightPicker([_light]);
+
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode |= AWPDebugDraw.DBG_DrawConstraints | AWPDebugDraw.DBG_DrawConstraintLimits;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lights = [_light];
-			var ground : Plane = new Plane(material, 50000, 50000);
+			material.lightPicker = _lightPicker;
+			var ground : Mesh = new Mesh();
+			ground.geometry = new PlaneGeometry(50000, 50000);
+			ground.material = material;
 			ground.mouseEnabled = true;
-			ground.mouseDetails = true;
+			
 			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
 			_view.scene.addChild(ground);
 
@@ -81,7 +90,7 @@ package {
 			physicsWorld.addRigidBody(groundRigidbody);
 
 			material = new ColorMaterial(0xfc6a11);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
 
 			// create rigidbody shapes
 			sphereShape = new AWPSphereShape(100);
@@ -94,7 +103,9 @@ package {
 			var boxShape : AWPBoxShape = new AWPBoxShape(200, 200, 200);
 			var p2p : AWPPoint2PointConstraint;
 			for (var i : int = 0; i < 6; i++ ) {
-				mesh = new Sphere(material, 100);
+				mesh = new Mesh();
+				mesh.geometry = new SphereGeometry(100);
+				mesh.material = material;
 				//_view.scene.addChild(mesh);
 				prevBody = currBody;
 				currBody = new AWPRigidBody(sphereShape, mesh, 2);
@@ -113,7 +124,9 @@ package {
 			boxShape = new AWPBoxShape(400, 80, 300);
 			var hinge : AWPHingeConstraint;
 			for (i = 0; i < 5; i++ ) {
-				mesh = new Cube(material, 400, 80, 300);
+				mesh = new Mesh();
+				mesh.geometry = new CubeGeometry(400, 80, 300);
+				mesh.material = material;
 				//_view.scene.addChild(mesh);
 				prevBody = currBody;
 				currBody = new AWPRigidBody(boxShape, mesh, 2);
@@ -130,7 +143,9 @@ package {
 
 			// create a door use AWPHingeConstraint
 			boxShape = new AWPBoxShape(500, 700, 80);
-			mesh = new Cube(material, 500, 700, 80);
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(500, 700, 80);
+			mesh.material = material;
 			//_view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 1);
@@ -144,7 +159,9 @@ package {
 
 			// create a slider use AWPGeneric6DofConstraint
 			boxShape = new AWPBoxShape(300, 300, 600);
-			mesh = new Cube(material, 300, 300, 600);
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(300, 300, 600);
+			mesh.material = material;
 			//_view.scene.addChild(mesh);
 
 			prevBody = new AWPRigidBody(boxShape, mesh, 10);
@@ -153,7 +170,9 @@ package {
 			physicsWorld.addRigidBody(prevBody);
 
 			boxShape = new AWPBoxShape(200, 200, 600);
-			mesh = new Cube(material, 200, 200, 600);
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(200, 200, 600);
+			mesh.material = material;
 			//_view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 2);
@@ -174,14 +193,19 @@ package {
 
 			// create a ConeTwist constraint
 			boxShape = new AWPBoxShape(200, 600, 200);
-			mesh = new Cube(material, 200, 600, 200);
+
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(200, 600, 200);
+			mesh.material = material;
 			//_view.scene.addChild(mesh);
 
 			prevBody = new AWPRigidBody(boxShape, mesh, 5);
 			prevBody.position = new Vector3D(1000, 1000, 0);
 			physicsWorld.addRigidBody(prevBody);
 
-			mesh = new Cube(material, 200, 600, 200);
+			mesh = new Mesh();
+			mesh.geometry = new CubeGeometry(200, 600, 200);
+			mesh.material = material;
 			//_view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 5);
@@ -213,9 +237,11 @@ package {
 
 			// shoot a sphere
 			var material : ColorMaterial = new ColorMaterial(0xb35b11);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
 
-			var sphere : Sphere = new Sphere(material, 100);
+			var sphere : Mesh = new Mesh();
+			sphere.geometry = new SphereGeometry(100);
+			sphere.material = material;
 			//_view.scene.addChild(sphere);
 
 			var body : AWPRigidBody = new AWPRigidBody(sphereShape, sphere, 2);

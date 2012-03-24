@@ -7,15 +7,17 @@ package {
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.*;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.primitives.CubeGeometry;
+	import away3d.textures.BitmapTexture;
 
 	import awayphysics.collision.dispatch.AWPCollisionObject;
 	import awayphysics.collision.shapes.*;
+	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.vehicle.*;
-	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -38,8 +40,8 @@ package {
 		private var timeStep : Number = 1.0 / 60;
 		private var keyRight : Boolean = false;
 		private var keyLeft : Boolean = false;
-		
-		private var debugDraw:AWPDebugDraw;
+		private var debugDraw : AWPDebugDraw;
+		private var _lightPicker : StaticLightPicker;
 
 		public function BvhTriangleMeshCarTest() {
 			if (stage) init();
@@ -65,10 +67,13 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
-			
-			debugDraw = new AWPDebugDraw(_view, physicsWorld); 
+			physicsWorld.gravity = new Vector3D(0, -20, 0);
+
+			_lightPicker = new StaticLightPicker([_light]);
+
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
-			
+
 			Parsers.enableAllBundled();
 
 			// load scene model
@@ -76,7 +81,7 @@ package {
 			_loader.load(new URLRequest('../assets/scene.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
-			 //load car model
+			// load car model
 			_loader = new Loader3D();
 			_loader.load(new URLRequest('../assets/car.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
@@ -91,7 +96,7 @@ package {
 			_view.scene.addChild(container);
 
 			var materia : ColorMaterial = new ColorMaterial(0xfa6c16);
-			materia.lights = [_light];
+			materia.lightPicker = _lightPicker;
 			var sceneMesh : Mesh = Mesh(container.getChildAt(0));
 			sceneMesh.geometry.scale(1000);
 			sceneMesh.material = materia;
@@ -102,7 +107,7 @@ package {
 			physicsWorld.addRigidBody(sceneBody);
 
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lights = [_light];
+			material.lightPicker = _lightPicker;
 
 			// create rigidbody shape
 			var boxShape : AWPBoxShape = new AWPBoxShape(200, 200, 200);
@@ -117,7 +122,9 @@ package {
 				for (var j : int = 0; j < numz; j++ ) {
 					for (var k : int = 0; k < numy; k++ ) {
 						// create boxes
-						mesh = new Cube(material, 200, 200, 200);
+						mesh = new Mesh();
+						mesh.geometry = new CubeGeometry(200, 200, 200);
+						mesh.material = material;
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
@@ -133,8 +140,8 @@ package {
 			_view.scene.addChild(container);
 			var mesh : Mesh;
 
-			var carMaterial : BitmapMaterial = new BitmapMaterial(new CarSkin().bitmapData);
-			carMaterial.lights = [_light];
+			var carMaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(new CarSkin().bitmapData));
+			carMaterial.lightPicker = _lightPicker;
 			for (var i : int = 0; i < container.numChildren; i++) {
 				mesh = Mesh(container.getChildAt(i));
 				mesh.geometry.scale(100);

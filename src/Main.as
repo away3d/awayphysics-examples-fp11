@@ -10,14 +10,24 @@ package {
 		 * Away Physics demos
 		 * @authors 	Ringo Blanken - http://www.ringo.nl/en/
 		 * 				Muzer - http://blog.muzerly.com/
-		 */
-		// Setting, change _selectedDemo to 0 till 8
-		// 0 = Basictest, 1 = BasicStressTest, 2=Gravity, 3=compoundshape,4= collisionfilter
-		// 5= constraint, 6= vehicle terrain, 7= character walk demo, 8 = bvhTriangleMeshCar
-		// 9 = convexhull
-		private var _selectedDemo : int = 9;
+		 
+		 * Tech demo's, 11 in total		
+		 * 0 =  Basictest
+		 * 1 =  BasicStressTest
+		 * 2 =  Gravity
+		 * 3 =  Compoundshape
+		 * 4 =  Collisionfilter
+		 * 5 =  Constraint
+		 * 6 =  Vehicle terrain
+		 * 7 =  Character walk demo
+		 * 8 =  BVHTriangleMeshCar
+		 * 9 =  Convexhull
+		 * 10 = CollionEventTest
+		*/
 		
-		// private var _totalDemos		: int = 8;
+		// CHANGE NUMBER HERE for different demo's, 0 till 11
+		private var _selectedDemo : int = 8;
+		
 		private var _currentDemo : Sprite;
 
 		public function Main() {
@@ -29,17 +39,18 @@ package {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.quality = StageQuality.HIGH;
 			stage.frameRate = 60;
-			// stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			startCurrentDemo();
 		}
 
 		private function startCurrentDemo() : void {
 			switch (_selectedDemo) {
+				
 				case 0:
 					var basicTest : BasicTest = new BasicTest();
 					this.addChild(basicTest);
 					_currentDemo = basicTest;
 					break;
+				
 				case 1:
 					var basicStressTest : BasicStressTest = new BasicStressTest();
 					this.addChild(basicStressTest);
@@ -50,11 +61,13 @@ package {
 					this.addChild(gravity);
 					_currentDemo = gravity;
 					break;
+				
 				case 3:
 					var compoundShapeTest : CompoundShapeTest = new CompoundShapeTest();
 					this.addChild(compoundShapeTest);
 					_currentDemo = compoundShapeTest;
 					break;
+				
 				case 4:
 					var collisionFilterTest : CollisionFilterTest = new CollisionFilterTest();
 					this.addChild(collisionFilterTest);
@@ -75,6 +88,7 @@ package {
 					this.addChild(characterDemo);
 					_currentDemo = characterDemo;
 					break;
+				
 				case 8:
 					var bvhTriangleMeshCarTest : BvhTriangleMeshCarTest = new BvhTriangleMeshCarTest();
 					this.addChild(bvhTriangleMeshCarTest);
@@ -84,6 +98,11 @@ package {
 					var convexHullShapeTest : ConvexHullShapeTest = new ConvexHullShapeTest();
 					this.addChild(convexHullShapeTest);
 					_currentDemo = convexHullShapeTest;
+					break;
+				case 10:
+					var collisionEventTest:CollisionEventTest = new CollisionEventTest();
+					this.addChild(collisionEventTest);
+					_currentDemo = collisionEventTest;
 					break;
 			}
 		}
@@ -95,33 +114,5 @@ package {
 				init();
 			}
 		}
-		/*
-		private function keyDownHandler(event : KeyboardEvent) : void {
-		switch(event.keyCode) {
-		case Keyboard.PAGE_UP:
-		if (_selectedDemo == _totalDemos) {
-		_selectedDemo = 0;
-		}
-		else {
-		_selectedDemo += 1;	
-		}
-		_currentDemo.removeChildren();
-		startCurrentDemo();
-		break;
-					
-		case Keyboard.PAGE_DOWN:
-		if (_selectedDemo > 0) {
-		_selectedDemo -= 1;
-		}
-		else {
-		_selectedDemo = _totalDemos;
-		}
-		this.removeChild(_currentDemo);
-		_currentDemo.removeChildren();
-		startCurrentDemo();
-		break;
-		}
-		}
-		 */
 	}
 }
