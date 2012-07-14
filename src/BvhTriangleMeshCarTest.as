@@ -1,4 +1,5 @@
 package {
+	import flash.display.Bitmap;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
@@ -140,7 +141,7 @@ package {
 			_view.scene.addChild(container);
 			var mesh : Mesh;
 
-			var carMaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(new CarSkin().bitmapData));
+			var carMaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new CarSkin()).bitmapData));
 			carMaterial.lightPicker = _lightPicker;
 			for (var i : int = 0; i < container.numChildren; i++) {
 				mesh = Mesh(container.getChildAt(i));

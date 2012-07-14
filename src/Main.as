@@ -23,11 +23,9 @@ package {
 		 * 8 =  BVHTriangleMeshCar
 		 * 9 =  Convexhull
 		 * 10 = CollionEventTest
-		*/
-		
-		// CHANGE NUMBER HERE for different demo's, 0 till 11
-		private var _selectedDemo : int = 8;
-		
+		 */
+		// CHANGE NUMBER HERE for different demo's, 0 till 10
+		private var _selectedDemo : int = 10;
 		private var _currentDemo : Sprite;
 
 		public function Main() {
@@ -44,13 +42,11 @@ package {
 
 		private function startCurrentDemo() : void {
 			switch (_selectedDemo) {
-				
 				case 0:
 					var basicTest : BasicTest = new BasicTest();
 					this.addChild(basicTest);
 					_currentDemo = basicTest;
 					break;
-				
 				case 1:
 					var basicStressTest : BasicStressTest = new BasicStressTest();
 					this.addChild(basicStressTest);
@@ -61,13 +57,11 @@ package {
 					this.addChild(gravity);
 					_currentDemo = gravity;
 					break;
-				
 				case 3:
 					var compoundShapeTest : CompoundShapeTest = new CompoundShapeTest();
 					this.addChild(compoundShapeTest);
 					_currentDemo = compoundShapeTest;
 					break;
-				
 				case 4:
 					var collisionFilterTest : CollisionFilterTest = new CollisionFilterTest();
 					this.addChild(collisionFilterTest);
@@ -88,7 +82,6 @@ package {
 					this.addChild(characterDemo);
 					_currentDemo = characterDemo;
 					break;
-				
 				case 8:
 					var bvhTriangleMeshCarTest : BvhTriangleMeshCarTest = new BvhTriangleMeshCarTest();
 					this.addChild(bvhTriangleMeshCarTest);
@@ -100,7 +93,7 @@ package {
 					_currentDemo = convexHullShapeTest;
 					break;
 				case 10:
-					var collisionEventTest:CollisionEventTest = new CollisionEventTest();
+					var collisionEventTest : CollisionEventTest = new CollisionEventTest();
 					this.addChild(collisionEventTest);
 					_currentDemo = collisionEventTest;
 					break;

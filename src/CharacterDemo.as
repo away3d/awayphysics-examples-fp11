@@ -1,4 +1,5 @@
 package {
+	import flash.display.Bitmap;
 	import away3d.textures.BitmapTexture;
 	import away3d.materials.TextureMaterial;
 	import away3d.animators.SmoothSkeletonAnimator;
@@ -17,7 +18,7 @@ package {
 	import away3d.loaders.parsers.MD5AnimParser;
 	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.BitmapMaterial;
+	
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.primitives.CapsuleGeometry;
@@ -125,10 +126,10 @@ package {
 				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(_characterMesh.animationState));
 				_animationController.updateRootPosition = false;
 
-				var material : TextureMaterial = new TextureMaterial(new BitmapTexture(new Skin().bitmapData));
+				var material : TextureMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new Skin()).bitmapData));
 				material.lightPicker = _lightPicker;
-				material.normalMap = new BitmapTexture(new Norm().bitmapData);
-				material.specularMap = new BitmapTexture(new Spec().bitmapData);
+				material.normalMap = new BitmapTexture(Bitmap(new Norm()).bitmapData);
+				material.specularMap = new BitmapTexture(Bitmap(new Spec()).bitmapData);
 				_characterMesh.material = material;
 
 				var container : ObjectContainer3D = new ObjectContainer3D();

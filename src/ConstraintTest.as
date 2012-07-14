@@ -35,11 +35,8 @@ package {
 		private var sphereShape : AWPSphereShape;
 		private var timeStep : Number = 1.0 / 60;
 		private var generic6Dof : AWPGeneric6DofConstraint;
-
 		private var _lightPicker : StaticLightPicker;
-
-		
-		private var debugDraw:AWPDebugDraw;
+		private var debugDraw : AWPDebugDraw;
 
 		public function ConstraintTest() {
 			if (stage) init();
@@ -66,7 +63,7 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
-			physicsWorld.gravity = new Vector3D(0,-20,0);
+			physicsWorld.gravity = new Vector3D(0, -20, 0);
 
 			_lightPicker = new StaticLightPicker([_light]);
 
@@ -80,7 +77,7 @@ package {
 			ground.geometry = new PlaneGeometry(50000, 50000);
 			ground.material = material;
 			ground.mouseEnabled = true;
-			
+
 			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
 			_view.scene.addChild(ground);
 
@@ -106,7 +103,7 @@ package {
 				mesh = new Mesh();
 				mesh.geometry = new SphereGeometry(100);
 				mesh.material = material;
-				//_view.scene.addChild(mesh);
+				// _view.scene.addChild(mesh);
 				prevBody = currBody;
 				currBody = new AWPRigidBody(sphereShape, mesh, 2);
 				currBody.position = new Vector3D(-1500 - (200 * i), 1500, 0);
@@ -127,7 +124,7 @@ package {
 				mesh = new Mesh();
 				mesh.geometry = new CubeGeometry(400, 80, 300);
 				mesh.material = material;
-				//_view.scene.addChild(mesh);
+				// _view.scene.addChild(mesh);
 				prevBody = currBody;
 				currBody = new AWPRigidBody(boxShape, mesh, 2);
 				currBody.position = new Vector3D(-500, 2000, (310 * i));
@@ -146,7 +143,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new CubeGeometry(500, 700, 80);
 			mesh.material = material;
-			//_view.scene.addChild(mesh);
+			// _view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 1);
 			currBody.position = new Vector3D(0, 1000, 0);
@@ -154,7 +151,7 @@ package {
 
 			var doorHinge : AWPHingeConstraint = new AWPHingeConstraint(currBody, new Vector3D(-250, 0, 0), new Vector3D(0, 1, 0));
 			doorHinge.setLimit(-Math.PI / 4, Math.PI / 4);
-			//doorHinge.setAngularMotor(true, 10, 20);
+			// doorHinge.setAngularMotor(true, 10, 20);
 			physicsWorld.addConstraint(doorHinge);
 
 			// create a slider use AWPGeneric6DofConstraint
@@ -162,7 +159,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new CubeGeometry(300, 300, 600);
 			mesh.material = material;
-			//_view.scene.addChild(mesh);
+			// _view.scene.addChild(mesh);
 
 			prevBody = new AWPRigidBody(boxShape, mesh, 10);
 			prevBody.friction = 0.9;
@@ -173,7 +170,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new CubeGeometry(200, 200, 600);
 			mesh.material = material;
-			//_view.scene.addChild(mesh);
+			// _view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 2);
 			currBody.position = new Vector3D(600, 200, -400);
@@ -197,7 +194,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new CubeGeometry(200, 600, 200);
 			mesh.material = material;
-			//_view.scene.addChild(mesh);
+			// _view.scene.addChild(mesh);
 
 			prevBody = new AWPRigidBody(boxShape, mesh, 5);
 			prevBody.position = new Vector3D(1000, 1000, 0);
@@ -206,7 +203,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new CubeGeometry(200, 600, 200);
 			mesh.material = material;
-			//_view.scene.addChild(mesh);
+			// _view.scene.addChild(mesh);
 
 			currBody = new AWPRigidBody(boxShape, mesh, 5);
 			currBody.position = new Vector3D(1000, 400, 0);
@@ -229,7 +226,7 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localY, event.localZ);
+			var mpos : Vector3D = new Vector3D(event.localPosition.x,event.localPosition.y,event.localPosition.z);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
@@ -242,7 +239,7 @@ package {
 			var sphere : Mesh = new Mesh();
 			sphere.geometry = new SphereGeometry(100);
 			sphere.material = material;
-			//_view.scene.addChild(sphere);
+			// _view.scene.addChild(sphere);
 
 			var body : AWPRigidBody = new AWPRigidBody(sphereShape, sphere, 2);
 			body.position = pos;

@@ -60,7 +60,7 @@ package {
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();
 			_physicsWorld.initWithDbvtBroadphase();
-			_physicsWorld.gravity = new Vector3D(0,-20,0);
+			_physicsWorld.gravity = new Vector3D(0, -20, 0);
 
 			_lightPicker = new StaticLightPicker([_light]);
 
@@ -149,7 +149,7 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localY, event.localZ);
+			var mpos : Vector3D = new Vector3D(event.localPosition.x,event.localPosition.y,event.localPosition.z);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
@@ -177,6 +177,5 @@ package {
 			_physicsWorld.step(_timeStep, 1, _timeStep);
 			_view.render();
 		}
-
 	}
 }

@@ -29,27 +29,23 @@ package {
 		private var _physicsWorld : AWPDynamicsWorld;
 		private var _sphereShape : AWPSphereShape;
 		private var _timeStep : Number = 1.0 / 60;
-
-		//light objects
-		private var _sunLight:DirectionalLight;
-		private var _lightPicker:StaticLightPicker;
+		// light objects
+		private var _sunLight : DirectionalLight;
+		private var _lightPicker : StaticLightPicker;
 
 		public function BasicStressTest() {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
-
-		private function initLights():void
-		{
+		private function initLights() : void {
 			_sunLight = new DirectionalLight(-300, -300, -500);
 			_sunLight.color = 0xfffdc5;
 			_sunLight.ambient = 1;
 			_view.scene.addChild(_sunLight);
-			
+
 			_lightPicker = new StaticLightPicker([_sunLight]);
 		}
-
 
 		private function init(e : Event = null) : void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
@@ -70,15 +66,14 @@ package {
 			// init the physics world
 			_physicsWorld = AWPDynamicsWorld.getInstance();
 			_physicsWorld.initWithDbvtBroadphase();
-			_physicsWorld.gravity = new Vector3D(0,-40,0);
-
+			_physicsWorld.gravity = new Vector3D(0, -40, 0);
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
 			material.shadowMethod = new FilteredShadowMapMethod(_sunLight);
 			material.lightPicker = _lightPicker;
 			var ground : Mesh = new Mesh();
-			ground.geometry = new PlaneGeometry(10000, 10000,1,1,false);
+			ground.geometry = new PlaneGeometry(10000, 10000, 1, 1, false);
 			ground.castsShadows = true;
 			ground.material = material;
 			_view.scene.addChild(ground);
@@ -89,7 +84,7 @@ package {
 			_physicsWorld.addRigidBody(groundRigidbody);
 
 			// set ground rotation
-			var rot:Vector3D = new Vector3D(90,0,0);
+			var rot : Vector3D = new Vector3D(90, 0, 0);
 			groundRigidbody.rotation = rot;
 
 			material = new ColorMaterial(0xfc6a11);
@@ -103,9 +98,9 @@ package {
 			var coneShape : AWPConeShape = new AWPConeShape(50, 100);
 
 			// create geometry
-			var boxGeometry:CubeGeometry = new CubeGeometry(100, 100, 100);
-			var cylinderGeometry:CylinderGeometry = new CylinderGeometry(50,50,100); 
-			var coneGeometry:ConeGeometry= new ConeGeometry(50,100);
+			var boxGeometry : CubeGeometry = new CubeGeometry(100, 100, 100);
+			var cylinderGeometry : CylinderGeometry = new CylinderGeometry(50, 50, 100);
+			var coneGeometry : ConeGeometry = new ConeGeometry(50, 100);
 
 			// create rigidbodies
 			var mesh : Mesh;

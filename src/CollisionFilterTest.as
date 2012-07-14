@@ -45,10 +45,8 @@ package {
 		private var keyLeft : Boolean = false;
 		private var keyForward : Boolean = false;
 		private var keyReverse : Boolean = false;
-		
 		private var _lightPicker : StaticLightPicker;
-		
-		private var debugDraw:AWPDebugDraw;
+		private var debugDraw : AWPDebugDraw;
 
 		public function CollisionFilterTest() {
 			if (stage) init();
@@ -75,11 +73,10 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
-			physicsWorld.gravity = new Vector3D(0,-20,0);
+			physicsWorld.gravity = new Vector3D(0, -20, 0);
 
 			_lightPicker = new StaticLightPicker([_light]);
-			
-			
+
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 
 			// create ground mesh
@@ -131,7 +128,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new ConeGeometry(400, 600);
 			mesh.material = material;
-			
+
 			_view.scene.addChild(mesh);
 			shape = new AWPConeShape(400, 600);
 			body = new AWPRigidBody(shape, mesh, 1);
@@ -147,7 +144,7 @@ package {
 			mesh = new Mesh();
 			mesh.geometry = new SphereGeometry(200);
 			mesh.material = material;
-			
+
 			_view.scene.addChild(mesh);
 			shape = new AWPSphereShape(200);
 			sphereBody = new AWPRigidBody(shape, mesh, 1);

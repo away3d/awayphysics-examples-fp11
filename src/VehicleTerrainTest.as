@@ -97,12 +97,11 @@ package {
 
 			_lightPicker = new StaticLightPicker([_light]);
 
-			
-			_terrainMethod = new TerrainDiffuseMethod([new BitmapTexture(new Beach().bitmapData), new BitmapTexture(new Grass().bitmapData), new BitmapTexture(new Beach().bitmapData)], new BitmapTexture(new Rock().bitmapData), [1, 50, 150, 100]);
-			
-			var bmaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(new Albedo().bitmapData));
+			_terrainMethod = new TerrainDiffuseMethod([new BitmapTexture(Bitmap(new Beach()).bitmapData), new BitmapTexture(Bitmap(new Grass()).bitmapData), new BitmapTexture(Bitmap(new Beach()).bitmapData)], new BitmapTexture(Bitmap(new Rock()).bitmapData), [1, 50, 150, 100]);
+
+			var bmaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new Albedo()).bitmapData));
 			bmaterial.diffuseMethod = _terrainMethod;
-			bmaterial.normalMap = new BitmapTexture(new Normals().bitmapData);
+			bmaterial.normalMap = new BitmapTexture(Bitmap(new Normals()).bitmapData);
 			bmaterial.ambientColor = 0x202030;
 			bmaterial.specular = .2;
 
@@ -159,7 +158,7 @@ package {
 				physicsWorld.addRigidBody(body);
 			}
 
-			carMaterial = new TextureMaterial(new BitmapTexture(new CarSkin().bitmapData));
+			carMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new CarSkin()).bitmapData));
 			carMaterial.lightPicker = _lightPicker;
 
 			// load car model

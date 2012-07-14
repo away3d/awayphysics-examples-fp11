@@ -130,7 +130,7 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localX, event.localY, event.localZ);
+			var mpos : Vector3D = new Vector3D(event.localPosition.x,event.localPosition.y,event.localPosition.z);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();

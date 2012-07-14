@@ -32,8 +32,7 @@ package {
 		private var isMouseDown : Boolean;
 		private var currMousePos : Vector3D;
 		private var _lightPicker : StaticLightPicker;
-		
-		private var debugDraw:AWPDebugDraw;
+		private var debugDraw : AWPDebugDraw;
 
 		public function GravityTest() {
 			if (stage) init();
@@ -62,8 +61,7 @@ package {
 			physicsWorld.gravity = new Vector3D(0, 0, 20);
 
 			_lightPicker = new StaticLightPicker([_light]);
-			
-			
+
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
@@ -71,10 +69,10 @@ package {
 			var material : ColorMaterial = new ColorMaterial(0x252525);
 			material.lightPicker = _lightPicker;
 			var ground : Mesh = new Mesh();
-			ground.geometry = new PlaneGeometry(50000,50000,4,4);
+			ground.geometry = new PlaneGeometry(50000, 50000, 4, 4);
 			ground.material = material;
 			ground.mouseEnabled = true;
-			
+
 			ground.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown);
 			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
 			ground.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
@@ -84,8 +82,8 @@ package {
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
-			
-			groundRigidbody.rotation = new Vector3D( -90, 0, 0);
+
+			groundRigidbody.rotation = new Vector3D(-90, 0, 0);
 
 			material = new ColorMaterial(0xe28313);
 			material.lightPicker = _lightPicker;
@@ -106,7 +104,7 @@ package {
 			for (var i : int; i < 20; i++ ) {
 				// create boxes
 				mesh = new Mesh(boxGeometry, material);
-				
+
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(boxShape, mesh, 1);
 				body.friction = .9;
@@ -137,7 +135,7 @@ package {
 
 		private function onMouseDown(event : MouseEvent3D) : void {
 			isMouseDown = true;
-			currMousePos = new Vector3D(event.localX, event.localZ, -600);
+			currMousePos = new Vector3D(event.localPosition.x, event.localPosition.z, -600);
 			this.addEventListener(Event.ENTER_FRAME, handleGravity);
 		}
 
@@ -163,7 +161,7 @@ package {
 
 		private function onMouseMove(event : MouseEvent3D) : void {
 			if (isMouseDown) {
-				currMousePos = new Vector3D(event.localX, event.localZ, -600);
+				currMousePos = new Vector3D(event.localPosition.x, event.localPosition.z, -600);
 			}
 		}
 
