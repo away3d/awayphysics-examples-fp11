@@ -1,10 +1,7 @@
 package {
-	import flash.display.Bitmap;
-	import away3d.textures.BitmapTexture;
-	import away3d.materials.TextureMaterial;
-	import away3d.animators.SmoothSkeletonAnimator;
-	import away3d.animators.data.SkeletonAnimationSequence;
-	import away3d.animators.data.SkeletonAnimationState;
+	import away3d.animators.*;
+	import away3d.animators.data.Skeleton;
+	import away3d.animators.transitions.CrossfadeStateTransition;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
@@ -18,12 +15,13 @@ package {
 	import away3d.loaders.parsers.MD5AnimParser;
 	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.loaders.parsers.Parsers;
-	
 	import away3d.materials.ColorMaterial;
-	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.lightpickers.*;
 	import away3d.primitives.CapsuleGeometry;
 	import away3d.primitives.CubeGeometry;
-
+	import away3d.textures.BitmapTexture;
+	
 	import awayphysics.collision.dispatch.AWPGhostObject;
 	import awayphysics.collision.shapes.*;
 	import awayphysics.data.AWPCollisionFlags;
@@ -31,7 +29,7 @@ package {
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.character.AWPKinematicCharacterController;
 	import awayphysics.events.AWPEvent;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -41,16 +39,21 @@ package {
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CharacterDemo extends Sprite {
-		[Embed(source="../embeds/hellknight/hellknight.jpg")]
+		[Embed(source="../embeds/hellknight/hellknight_diffuse.jpg")]
 		private var Skin : Class;
-		[Embed(source="../embeds/hellknight/hellknight_s.png")]
+		[Embed(source="../embeds/hellknight/hellknight_specular.png")]
 		private var Spec : Class;
-		[Embed(source="../embeds/hellknight/hellknight_local.png")]
+		[Embed(source="../embeds/hellknight/hellknight_normals.png")]
 		private var Norm : Class;
 		private var _view : View3D;
 		private var _light : PointLight;
-		private var _animationController : SmoothSkeletonAnimator;
-		private var _characterMesh : Mesh;
+		private var lightPicker:StaticLightPicker;
+		private var _animationController : SkeletonAnimator;
+		private var _animationSet:SkeletonAnimationSet;
+		private var _stateTransition:CrossfadeStateTransition = new CrossfadeStateTransition(0.5);
+		private var _skeleton:Skeleton;
+		private var _characterMesh:Mesh;
+		
 		private var physicsWorld : AWPDynamicsWorld;
 		private var character : AWPKinematicCharacterController;
 		private var timeStep : Number = 1.0 / 60;
@@ -62,8 +65,8 @@ package {
 		private var walkDirection : Vector3D = new Vector3D();
 		private var walkSpeed : Number = 0.1;
 		private var chRotation : Number = 0;
-		private var debugDraw : AWPDebugDraw;
-		private var _lightPicker : StaticLightPicker;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function CharacterDemo() {
 			if (stage) init();
@@ -74,14 +77,15 @@ package {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
 			_view = new View3D();
-			_view.antiAlias = 4;
 			this.addChild(_view);
 			this.addChild(new AwayStats(_view));
 
 			_light = new PointLight();
 			_light.y = 5000;
 			_view.scene.addChild(_light);
-
+			
+			lightPicker = new StaticLightPicker([_light]);
+			
 			_view.camera.lens.far = 20000;
 			_view.camera.y = _light.y;
 			_view.camera.z = _light.z;
@@ -91,15 +95,12 @@ package {
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
 			physicsWorld.collisionCallbackOn = true;
-			physicsWorld.gravity = new Vector3D(0, -20, 0);
-
-			_lightPicker = new StaticLightPicker([_light]);
-
+			
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			Parsers.enableAllBundled();
-
+			
 			// load scene model
 			var _loader : Loader3D = new Loader3D();
 			_loader.load(new URLRequest('../assets/scene.obj'));
@@ -122,26 +123,21 @@ package {
 				_characterMesh = event.asset as Mesh;
 				_characterMesh.scale(6);
 				_characterMesh.y = -400;
-
-				_animationController = new SmoothSkeletonAnimator(SkeletonAnimationState(_characterMesh.animationState));
-				_animationController.updateRootPosition = false;
-
-				var material : TextureMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new Skin()).bitmapData));
-				material.lightPicker = _lightPicker;
-				material.normalMap = new BitmapTexture(Bitmap(new Norm()).bitmapData);
-				material.specularMap = new BitmapTexture(Bitmap(new Spec()).bitmapData);
+				
+				var material : TextureMaterial = new TextureMaterial(new BitmapTexture(new Skin().bitmapData));
+				material.lightPicker = lightPicker;
+				material.normalMap = new BitmapTexture(new Norm().bitmapData);
+				material.specularMap = new BitmapTexture(new Spec().bitmapData);
 				_characterMesh.material = material;
-
-				var container : ObjectContainer3D = new ObjectContainer3D();
+				
+				var container:ObjectContainer3D=new ObjectContainer3D();
 				container.addChild(_characterMesh);
 				_view.scene.addChild(container);
-
-				// use to test bounding shape
-				var color : ColorMaterial = new ColorMaterial(0xffff00, 0.4);
-				color.lightPicker = _lightPicker;
-				var testMesh : Mesh = new Mesh();
-				testMesh.geometry = new CapsuleGeometry(300, 500);
-				testMesh.material = color;
+				
+				//use to test bounding shape
+				var color:ColorMaterial=new ColorMaterial(0xffff00,0.4);
+				color.lightPicker = lightPicker;
+				var testMesh:Mesh=new Mesh(new CapsuleGeometry(300,500),color);
 				container.addChild(testMesh);
 
 				// create character shape and controller
@@ -153,7 +149,15 @@ package {
 				character = new AWPKinematicCharacterController(ghostObject, shape, 0.1);
 				physicsWorld.addCharacter(character);
 				character.warp(new Vector3D(0, 500, -1000));
-
+			}else if (event.asset.assetType == AssetType.SKELETON) {
+				_skeleton = event.asset as Skeleton;
+			}else if (event.asset.assetType == AssetType.ANIMATION_SET) {
+				_animationSet = event.asset as SkeletonAnimationSet;
+				_animationController = new SkeletonAnimator(_animationSet,_skeleton);
+				_animationController.updateRootPosition = false;
+				
+				_characterMesh.animator = _animationController;
+				
 				AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAnimationComplete);
 				AssetLibrary.load(new URLRequest("../embeds/hellknight/idle2.md5anim"), null, "idle");
 				AssetLibrary.load(new URLRequest("../embeds/hellknight/walk7.md5anim"), null, "walk");
@@ -161,14 +165,14 @@ package {
 		}
 
 		private function onAnimationComplete(event : AssetEvent) : void {
-			if (event.asset.assetType == AssetType.ANIMATION) {
-				var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
-				if (seq) {
-					seq.name = event.asset.assetNamespace;
-					_animationController.addSequence(seq);
+			if (event.asset.assetType == AssetType.ANIMATION_STATE) {
+				var animationState:SkeletonAnimationState = event.asset as SkeletonAnimationState;
+				_animationSet.addState(animationState.assetNamespace, animationState);
+				
+				if (animationState.assetNamespace == "idle") {
+					_animationController.playbackSpeed = 1;
+					_animationController.play("idle",_stateTransition);
 				}
-				if (event.asset.assetNamespace == "idle")
-					_animationController.play("idle", 0.5);
 			}
 		}
 
@@ -176,7 +180,7 @@ package {
 			if (!(event.collisionObject.collisionFlags & AWPCollisionFlags.CF_STATIC_OBJECT)) {
 				var body : AWPRigidBody = AWPRigidBody(event.collisionObject);
 				var force : Vector3D = event.manifoldPoint.normalWorldOnB.clone();
-				force.scaleBy(-30);
+				force.scaleBy( -30);
 				body.applyForce(force, event.manifoldPoint.localPointB);
 			}
 		}
@@ -185,11 +189,11 @@ package {
 			var container : ObjectContainer3D = ObjectContainer3D(event.target);
 			_view.scene.addChild(container);
 
-			var material2 : ColorMaterial = new ColorMaterial(0xfa6c16);
-			material2.lightPicker = _lightPicker;
+			var materia : ColorMaterial = new ColorMaterial(0xfa6c16);
+			materia.lightPicker = lightPicker;
 			var sceneMesh : Mesh = Mesh(container.getChildAt(0));
 			sceneMesh.geometry.scale(1000);
-			sceneMesh.material = material2;
+			sceneMesh.material = materia;
 
 			// create triangle mesh shape
 			var sceneShape : AWPBvhTriangleMeshShape = new AWPBvhTriangleMeshShape(sceneMesh.geometry);
@@ -197,7 +201,7 @@ package {
 			physicsWorld.addRigidBody(sceneBody);
 
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lightPicker = _lightPicker;
+			material.lightPicker = lightPicker;
 
 			// create rigidbody shape
 			var boxShape : AWPBoxShape = new AWPBoxShape(400, 400, 400);
@@ -212,9 +216,7 @@ package {
 				for (var j : int = 0; j < numz; j++ ) {
 					for (var k : int = 0; k < numy; k++ ) {
 						// create boxes
-						mesh = new Mesh();
-						mesh.geometry = new CubeGeometry(400, 400, 400);
-						mesh.material = material;
+						mesh = new Mesh(new CubeGeometry(400, 400, 400),material);
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
@@ -255,13 +257,15 @@ package {
 					keyForward = false;
 					walkDirection.scaleBy(0);
 					character.setWalkDirection(walkDirection);
-					_animationController.play("idle", 0.5);
+					_animationController.playbackSpeed = 1;
+					_animationController.play("idle",_stateTransition);
 					break;
 				case Keyboard.DOWN:
 					keyReverse = false;
 					walkDirection.scaleBy(0);
 					character.setWalkDirection(walkDirection);
-					_animationController.play("idle", 0.5);
+					_animationController.playbackSpeed = 1;
+					_animationController.play("idle",_stateTransition);
 					break;
 				case Keyboard.LEFT:
 					keyLeft = false;
@@ -277,7 +281,7 @@ package {
 
 		private function handleEnterFrame(e : Event) : void {
 			physicsWorld.step(timeStep);
-
+			
 			if (character) {
 				if (keyLeft && character.onGround()) {
 					chRotation -= 3;
@@ -289,20 +293,20 @@ package {
 				}
 				if (keyForward) {
 					if (walkDirection.length == 0) {
-						_animationController.play("walk", 0.5);
-						_animationController.timeScale = 1.2;
+						_animationController.play("walk", _stateTransition);
+						_animationController.playbackSpeed = 1;
 					}
 					walkDirection = character.ghostObject.front;
-					walkDirection.scaleBy(-walkSpeed);
+					walkDirection.scaleBy(walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}
 				if (keyReverse) {
 					if (walkDirection.length == 0) {
-						_animationController.play("walk", 0.5);
-						_animationController.timeScale = -1.2;
+						_animationController.play("walk", _stateTransition);
+						_animationController.playbackSpeed = -1;
 					}
 					walkDirection = character.ghostObject.front;
-					walkDirection.scaleBy(walkSpeed);
+					walkDirection.scaleBy(-walkSpeed);
 					character.setWalkDirection(walkDirection);
 				}
 				if (keyUp && character.onGround()) {
@@ -311,7 +315,7 @@ package {
 				_view.camera.position = character.ghostObject.position.add(new Vector3D(0, 2000, -2500));
 				_view.camera.lookAt(character.ghostObject.position);
 			}
-
+			
 			_view.render();
 			debugDraw.debugDrawWorld();
 		}

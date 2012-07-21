@@ -1,24 +1,24 @@
 package {
-	import away3d.primitives.ConeGeometry;
-	import away3d.primitives.CylinderGeometry;
-	import away3d.primitives.CubeGeometry;
-	import away3d.primitives.PlaneGeometry;
-	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
-
+	import away3d.materials.lightpickers.*;
+	import away3d.primitives.ConeGeometry;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.CylinderGeometry;
+	import away3d.primitives.PlaneGeometry;
+	
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPConeShape;
 	import awayphysics.collision.shapes.AWPCylinderShape;
 	import awayphysics.collision.shapes.AWPStaticPlaneShape;
+	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
-	import awayphysics.debug.AWPDebugDraw;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Vector3D;
@@ -27,12 +27,13 @@ package {
 	public class GravityTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
+		private var lightPicker:StaticLightPicker;
 		private var physicsWorld : AWPDynamicsWorld;
 		private var timeStep : Number = 1.0 / 60;
 		private var isMouseDown : Boolean;
 		private var currMousePos : Vector3D;
-		private var _lightPicker : StaticLightPicker;
-		private var debugDraw : AWPDebugDraw;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function GravityTest() {
 			if (stage) init();
@@ -50,6 +51,8 @@ package {
 			_light.y = 0;
 			_light.z = -3000;
 			_view.scene.addChild(_light);
+			
+			lightPicker = new StaticLightPicker([_light]);
 
 			_view.camera.lens.far = 10000;
 			_view.camera.y = _light.y;
@@ -59,20 +62,15 @@ package {
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
 			physicsWorld.gravity = new Vector3D(0, 0, 20);
-
-			_lightPicker = new StaticLightPicker([_light]);
-
+			
 			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lightPicker = _lightPicker;
-			var ground : Mesh = new Mesh();
-			ground.geometry = new PlaneGeometry(50000, 50000, 4, 4);
-			ground.material = material;
+			material.lightPicker = lightPicker;
+			var ground :Mesh = new Mesh(new PlaneGeometry(50000, 50000), material);
 			ground.mouseEnabled = true;
-
 			ground.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown);
 			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
 			ground.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
@@ -82,29 +80,23 @@ package {
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
 			physicsWorld.addRigidBody(groundRigidbody);
-
-			groundRigidbody.rotation = new Vector3D(-90, 0, 0);
+			
+			groundRigidbody.rotation = new Vector3D( -90, 0, 0);
 
 			material = new ColorMaterial(0xe28313);
-			material.lightPicker = _lightPicker;
+			material.lightPicker = lightPicker;
 
 			// create rigidbody shapes
 			var boxShape : AWPBoxShape = new AWPBoxShape(100, 100, 100);
 			var cylinderShape : AWPCylinderShape = new AWPCylinderShape(50, 100);
 			var coneShape : AWPConeShape = new AWPConeShape(50, 100);
 
-			// geometry
-			var boxGeometry : CubeGeometry = new CubeGeometry(100, 100, 100);
-			var cylinderGeometry : CylinderGeometry = new CylinderGeometry(50, 50, 100);
-			var coneGeometry : ConeGeometry = new ConeGeometry(50, 100);
-
 			// create rigidbodies
 			var mesh : Mesh;
 			var body : AWPRigidBody;
 			for (var i : int; i < 20; i++ ) {
 				// create boxes
-				mesh = new Mesh(boxGeometry, material);
-
+				mesh = new Mesh(new CubeGeometry(100, 100, 100), material);
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(boxShape, mesh, 1);
 				body.friction = .9;
@@ -113,7 +105,7 @@ package {
 				physicsWorld.addRigidBody(body);
 
 				// create cylinders
-				mesh = new Mesh(cylinderGeometry, material);
+				mesh = new Mesh(new CylinderGeometry(50, 50, 100) ,material);
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(cylinderShape, mesh, 1);
 				body.friction = .9;
@@ -122,7 +114,7 @@ package {
 				physicsWorld.addRigidBody(body);
 
 				// create the Cones
-				mesh = new Mesh(coneGeometry, material);
+				mesh = new Mesh(new ConeGeometry(50, 100),material);
 				_view.scene.addChild(mesh);
 				body = new AWPRigidBody(coneShape, mesh, 1);
 				body.friction = .9;

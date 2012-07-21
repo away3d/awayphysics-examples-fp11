@@ -2,14 +2,15 @@ package {
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
+	import away3d.containers.ObjectContainer3D;
 	import away3d.events.MouseEvent3D;
 	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
-	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.materials.lightpickers.*;
 	import away3d.primitives.CubeGeometry;
 	import away3d.primitives.PlaneGeometry;
 	import away3d.primitives.SphereGeometry;
-
+	
 	import awayphysics.collision.shapes.AWPBoxShape;
 	import awayphysics.collision.shapes.AWPCompoundShape;
 	import awayphysics.collision.shapes.AWPSphereShape;
@@ -17,7 +18,7 @@ package {
 	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.AWPDynamicsWorld;
 	import awayphysics.dynamics.AWPRigidBody;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Vector3D;
@@ -26,11 +27,12 @@ package {
 	public class CompoundShapeTest extends Sprite {
 		private var _view : View3D;
 		private var _light : PointLight;
-		private var _physicsWorld : AWPDynamicsWorld;
-		private var _sphereShape : AWPSphereShape;
+		private var lightPicker:StaticLightPicker;
+		private var physicsWorld : AWPDynamicsWorld;
+		private var sphereShape : AWPSphereShape;
 		private var timeStep : Number = 1.0 / 60;
-		private var debugDraw : AWPDebugDraw;
-		private var _lightPicker : StaticLightPicker;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function CompoundShapeTest() {
 			if (stage) init();
@@ -48,6 +50,8 @@ package {
 			_light.y = 3000;
 			_light.z = -5000;
 			_view.scene.addChild(_light);
+			
+			lightPicker = new StaticLightPicker([_light]);
 
 			_view.camera.lens.far = 10000;
 			_view.camera.y = _light.y;
@@ -55,21 +59,16 @@ package {
 			_view.camera.rotationX = 25;
 
 			// init the physics world
-			_physicsWorld = AWPDynamicsWorld.getInstance();
-			_physicsWorld.initWithDbvtBroadphase();
-			_physicsWorld.gravity = new Vector3D(0, -20, 0);
-
-			_lightPicker = new StaticLightPicker([_light]);
-
-			debugDraw = new AWPDebugDraw(_view, _physicsWorld);
+			physicsWorld = AWPDynamicsWorld.getInstance();
+			physicsWorld.initWithDbvtBroadphase();
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld);
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
 
 			// create ground mesh
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lightPicker = _lightPicker;
-			var ground : Mesh = new Mesh();
-			ground.geometry = new PlaneGeometry(50000, 50000, 4, 4);
-			ground.material = material;
+			material.lightPicker = lightPicker;
+			var ground : Mesh = new Mesh(new PlaneGeometry(50000, 50000),material);
 			ground.mouseEnabled = true;
 			ground.addEventListener(MouseEvent3D.MOUSE_UP, onMouseUp);
 			_view.scene.addChild(ground);
@@ -77,29 +76,28 @@ package {
 			// create ground shape and rigidbody
 			var groundShape : AWPStaticPlaneShape = new AWPStaticPlaneShape(new Vector3D(0, 1, 0));
 			var groundRigidbody : AWPRigidBody = new AWPRigidBody(groundShape, ground, 0);
-			_physicsWorld.addRigidBody(groundRigidbody);
+			physicsWorld.addRigidBody(groundRigidbody);
 
 			// create a wall
-			var wallGeometry : CubeGeometry = new CubeGeometry(20000, 5000, 100);
-			var wall : Mesh = new Mesh(wallGeometry, material);
+			var wall : Mesh = new Mesh(new CubeGeometry(20000, 5000, 100), material);
 			_view.scene.addChild(wall);
 
 			var wallShape : AWPBoxShape = new AWPBoxShape(20000, 5000, 100);
 			var wallRigidbody : AWPRigidBody = new AWPRigidBody(wallShape, wall, 0);
-			_physicsWorld.addRigidBody(wallRigidbody);
+			physicsWorld.addRigidBody(wallRigidbody);
 
 			wallRigidbody.position = new Vector3D(0, 2500, 2000);
 
 			// create sphere shape
-			_sphereShape = new AWPSphereShape(100);
+			sphereShape = new AWPSphereShape(100);
 
 			// create chair shape
 			var chairShape : AWPCompoundShape = createChairShape();
 			material = new ColorMaterial(0xe28313);
-			material.lightPicker = _lightPicker;
+			material.lightPicker = lightPicker;
 
 			// create chair rigidbodies
-			var mesh : Mesh;
+			var mesh : ObjectContainer3D;
 			var body : AWPRigidBody;
 			for (var i : int; i < 10; i++ ) {
 				mesh = createChairMesh(material);
@@ -107,39 +105,21 @@ package {
 				body = new AWPRigidBody(chairShape, mesh, 1);
 				body.friction = .9;
 				body.position = new Vector3D(0, 500 + 1000 * i, 0);
-				_physicsWorld.addRigidBody(body);
+				physicsWorld.addRigidBody(body);
 			}
 
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 
-		private function createChairMesh(material : ColorMaterial) : Mesh {
-			var mesh : Mesh = new Mesh();
+		private function createChairMesh(material : ColorMaterial) : ObjectContainer3D {
+			var mesh : ObjectContainer3D = new ObjectContainer3D();
 
-			var child1 : Mesh = new Mesh();
-			child1.geometry = new CubeGeometry(460, 60, 500);
-			child1.material = material;
-
-			var child2 : Mesh = new Mesh();
-			child2.geometry = new CubeGeometry(60, 400, 60);
-			child2.material = material;
-
-			var child3 : Mesh = new Mesh();
-			child2.geometry = new CubeGeometry(60, 400, 60);
-			child2.material = material;
-
-			var child4 : Mesh = new Mesh();
-			child2.geometry = new CubeGeometry(60, 400, 60);
-			child2.material = material;
-
-			var child5 : Mesh = new Mesh();
-			child2.geometry = new CubeGeometry(60, 400, 60);
-			child2.material = material;
-
-			var child6 : Mesh = new Mesh();
-			child2.geometry = new CubeGeometry(400, 500, 60);
-			child2.material = material;
-
+			var child1 : Mesh = new Mesh(new CubeGeometry(460, 60, 500),material);
+			var child2 : Mesh = new Mesh(new CubeGeometry(60, 400, 60),material);
+			var child3 : Mesh = new Mesh(new CubeGeometry(60, 400, 60),material);
+			var child4 : Mesh = new Mesh(new CubeGeometry(60, 400, 60),material);
+			var child5 : Mesh = new Mesh(new CubeGeometry(60, 400, 60),material);
+			var child6 : Mesh = new Mesh(new CubeGeometry(400, 500, 60),material);
 			child2.position = new Vector3D(-180, -220, -200);
 			child3.position = new Vector3D(180, -220, -200);
 			child4.position = new Vector3D(180, -220, 200);
@@ -174,32 +154,28 @@ package {
 
 		private function onMouseUp(event : MouseEvent3D) : void {
 			var pos : Vector3D = _view.camera.position;
-			var mpos : Vector3D = new Vector3D(event.localPosition.x,event.localPosition.y,event.localPosition.z);
+			var mpos : Vector3D = new Vector3D(event.localPosition.x, event.localPosition.y, event.localPosition.z);
 
 			var impulse : Vector3D = mpos.subtract(pos);
 			impulse.normalize();
-			impulse.scaleBy(300);
+			impulse.scaleBy(200);
 
 			// shoot a sphere
-			var material : ColorMaterial = new ColorMaterial(0xffffff);
-			material.lightPicker = _lightPicker;
-			var sphereGeometry : SphereGeometry = new SphereGeometry(100);
-			var sphere : Mesh = new Mesh(sphereGeometry, material);
+			var material : ColorMaterial = new ColorMaterial(0xfc6a11);
+			material.lightPicker = lightPicker;
+
+			var sphere : Mesh = new Mesh(new SphereGeometry(100),material);
 			_view.scene.addChild(sphere);
 
-			var body : AWPRigidBody = new AWPRigidBody(_sphereShape, sphere, 2);
+			var body : AWPRigidBody = new AWPRigidBody(sphereShape, sphere, 2);
 			body.position = pos;
-			body.friction = 0.5;
-			body.restitution = 0.5;
-			body.ccdSweptSphereRadius = 0.5;
-			body.ccdMotionThreshold = 1;
-			_physicsWorld.addRigidBody(body);
+			physicsWorld.addRigidBody(body);
 
 			body.applyCentralImpulse(impulse);
 		}
 
 		private function handleEnterFrame(e : Event) : void {
-			_physicsWorld.step(timeStep);
+			physicsWorld.step(timeStep);
 			debugDraw.debugDrawWorld();
 			_view.render();
 		}

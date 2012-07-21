@@ -1,5 +1,4 @@
 package {
-	import flash.display.Bitmap;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
@@ -9,16 +8,16 @@ package {
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.ColorMaterial;
-	import away3d.materials.TextureMaterial;
-	import away3d.materials.lightpickers.StaticLightPicker;
-	import away3d.primitives.CubeGeometry;
+	import away3d.materials.lightpickers.*;
 	import away3d.textures.BitmapTexture;
+	import away3d.materials.TextureMaterial;
+	import away3d.primitives.*;
 
 	import awayphysics.collision.dispatch.AWPCollisionObject;
 	import awayphysics.collision.shapes.*;
-	import awayphysics.debug.AWPDebugDraw;
 	import awayphysics.dynamics.*;
 	import awayphysics.dynamics.vehicle.*;
+	import awayphysics.debug.AWPDebugDraw;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -33,6 +32,7 @@ package {
 		private var CarSkin : Class;
 		private var _view : View3D;
 		private var _light : PointLight;
+		private var lightPicker:StaticLightPicker;
 		private var physicsWorld : AWPDynamicsWorld;
 		private var car : AWPRaycastVehicle;
 		private var _engineForce : Number = 0;
@@ -41,8 +41,8 @@ package {
 		private var timeStep : Number = 1.0 / 60;
 		private var keyRight : Boolean = false;
 		private var keyLeft : Boolean = false;
-		private var debugDraw : AWPDebugDraw;
-		private var _lightPicker : StaticLightPicker;
+		
+		private var debugDraw:AWPDebugDraw;
 
 		public function BvhTriangleMeshCarTest() {
 			if (stage) init();
@@ -59,6 +59,8 @@ package {
 			_light = new PointLight();
 			_light.y = 5000;
 			_view.scene.addChild(_light);
+			
+			lightPicker = new StaticLightPicker([_light]);
 
 			_view.camera.lens.far = 20000;
 			_view.camera.y = 2000;
@@ -68,13 +70,10 @@ package {
 			// init the physics world
 			physicsWorld = AWPDynamicsWorld.getInstance();
 			physicsWorld.initWithDbvtBroadphase();
-			physicsWorld.gravity = new Vector3D(0, -20, 0);
-
-			_lightPicker = new StaticLightPicker([_light]);
-
-			debugDraw = new AWPDebugDraw(_view, physicsWorld);
+			
+			debugDraw = new AWPDebugDraw(_view, physicsWorld); 
 			debugDraw.debugMode = AWPDebugDraw.DBG_NoDebug;
-
+			
 			Parsers.enableAllBundled();
 
 			// load scene model
@@ -82,7 +81,7 @@ package {
 			_loader.load(new URLRequest('../assets/scene.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onSceneResourceComplete);
 
-			// load car model
+			 //load car model
 			_loader = new Loader3D();
 			_loader.load(new URLRequest('../assets/car.obj'));
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onCarResourceComplete);
@@ -97,7 +96,7 @@ package {
 			_view.scene.addChild(container);
 
 			var materia : ColorMaterial = new ColorMaterial(0xfa6c16);
-			materia.lightPicker = _lightPicker;
+			materia.lightPicker = lightPicker;
 			var sceneMesh : Mesh = Mesh(container.getChildAt(0));
 			sceneMesh.geometry.scale(1000);
 			sceneMesh.material = materia;
@@ -108,7 +107,7 @@ package {
 			physicsWorld.addRigidBody(sceneBody);
 
 			var material : ColorMaterial = new ColorMaterial(0x252525);
-			material.lightPicker = _lightPicker;
+			material.lightPicker = lightPicker;
 
 			// create rigidbody shape
 			var boxShape : AWPBoxShape = new AWPBoxShape(200, 200, 200);
@@ -123,9 +122,7 @@ package {
 				for (var j : int = 0; j < numz; j++ ) {
 					for (var k : int = 0; k < numy; k++ ) {
 						// create boxes
-						mesh = new Mesh();
-						mesh.geometry = new CubeGeometry(200, 200, 200);
-						mesh.material = material;
+						mesh = new Mesh(new CubeGeometry(200, 200, 200),material);
 						_view.scene.addChild(mesh);
 						body = new AWPRigidBody(boxShape, mesh, 1);
 						body.friction = .9;
@@ -140,9 +137,9 @@ package {
 			var container : ObjectContainer3D = ObjectContainer3D(event.target);
 			_view.scene.addChild(container);
 			var mesh : Mesh;
-
-			var carMaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(Bitmap(new CarSkin()).bitmapData));
-			carMaterial.lightPicker = _lightPicker;
+			
+			var carMaterial : TextureMaterial = new TextureMaterial(new BitmapTexture(new CarSkin().bitmapData));
+			carMaterial.lightPicker = lightPicker;
 			for (var i : int = 0; i < container.numChildren; i++) {
 				mesh = Mesh(container.getChildAt(i));
 				mesh.geometry.scale(100);
