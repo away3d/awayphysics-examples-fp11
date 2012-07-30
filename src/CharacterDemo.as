@@ -146,7 +146,7 @@ package {
 				ghostObject.collisionFlags = AWPCollisionFlags.CF_CHARACTER_OBJECT;
 				ghostObject.addEventListener(AWPEvent.COLLISION_ADDED, characterCollisionAdded);
 
-				character = new AWPKinematicCharacterController(ghostObject, shape, 0.1);
+				character = new AWPKinematicCharacterController(ghostObject, 0.1);
 				physicsWorld.addCharacter(character);
 				character.warp(new Vector3D(0, 500, -1000));
 			}else if (event.asset.assetType == AssetType.SKELETON) {
