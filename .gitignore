@@ -1,6 +1,6 @@
+/.flexLibProperties
+/target
 /.project
-/bin
 /.settings
-/away3d_core_fp11
-/awayphysics_core_fp11
-/lib
+/.actionScriptProperties
+*.iml
