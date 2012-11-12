@@ -1,41 +1,35 @@
 package {
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import flash.net.*;
+	import flash.ui.*;
+	
 	import away3d.animators.*;
-	import away3d.animators.data.Skeleton;
-	import away3d.animators.transitions.CrossfadeStateTransition;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.containers.View3D;
-	import away3d.debug.AwayStats;
-	import away3d.entities.Mesh;
-	import away3d.events.AssetEvent;
-	import away3d.events.LoaderEvent;
-	import away3d.library.AssetLibrary;
-	import away3d.library.assets.AssetType;
-	import away3d.lights.PointLight;
-	import away3d.loaders.Loader3D;
-	import away3d.loaders.parsers.MD5AnimParser;
-	import away3d.loaders.parsers.MD5MeshParser;
-	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.ColorMaterial;
-	import away3d.materials.TextureMaterial;
+	import away3d.animators.data.*;
+	import away3d.animators.nodes.*;
+	import away3d.animators.transitions.*;
+	import away3d.containers.*;
+	import away3d.debug.*;
+	import away3d.entities.*;
+	import away3d.events.*;
+	import away3d.library.*;
+	import away3d.library.assets.*;
+	import away3d.lights.*;
+	import away3d.loaders.*;
+	import away3d.loaders.parsers.*;
+	import away3d.materials.*;
 	import away3d.materials.lightpickers.*;
-	import away3d.primitives.CapsuleGeometry;
-	import away3d.primitives.CubeGeometry;
-	import away3d.textures.BitmapTexture;
+	import away3d.primitives.*;
+	import away3d.textures.*;
 	
-	import awayphysics.collision.dispatch.AWPGhostObject;
+	import awayphysics.collision.dispatch.*;
 	import awayphysics.collision.shapes.*;
-	import awayphysics.data.AWPCollisionFlags;
-	import awayphysics.debug.AWPDebugDraw;
+	import awayphysics.data.*;
+	import awayphysics.debug.*;
 	import awayphysics.dynamics.*;
-	import awayphysics.dynamics.character.AWPKinematicCharacterController;
-	import awayphysics.events.AWPEvent;
-	
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.geom.Vector3D;
-	import flash.net.URLRequest;
-	import flash.ui.Keyboard;
+	import awayphysics.dynamics.character.*;
+	import awayphysics.events.*;
 
 	[SWF(backgroundColor="#000000", frameRate="60", width="1024", height="768")]
 	public class CharacterDemo extends Sprite {
@@ -50,7 +44,7 @@ package {
 		private var lightPicker:StaticLightPicker;
 		private var _animationController : SkeletonAnimator;
 		private var _animationSet:SkeletonAnimationSet;
-		private var _stateTransition:CrossfadeStateTransition = new CrossfadeStateTransition(0.5);
+		private var _stateTransition:CrossfadeTransition = new CrossfadeTransition(0.5);
 		private var _skeleton:Skeleton;
 		private var _characterMesh:Mesh;
 		
@@ -154,7 +148,7 @@ package {
 			}else if (event.asset.assetType == AssetType.ANIMATION_SET) {
 				_animationSet = event.asset as SkeletonAnimationSet;
 				_animationController = new SkeletonAnimator(_animationSet,_skeleton);
-				_animationController.updateRootPosition = false;
+				_animationController.updatePosition = false;
 				
 				_characterMesh.animator = _animationController;
 				
@@ -165,11 +159,12 @@ package {
 		}
 
 		private function onAnimationComplete(event : AssetEvent) : void {
-			if (event.asset.assetType == AssetType.ANIMATION_STATE) {
-				var animationState:SkeletonAnimationState = event.asset as SkeletonAnimationState;
-				_animationSet.addState(animationState.assetNamespace, animationState);
+			if (event.asset.assetType == AssetType.ANIMATION_NODE) {
+				var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
+				animationNode.name = animationNode.assetNamespace;
+				_animationSet.addAnimation(animationNode);
 				
-				if (animationState.assetNamespace == "idle") {
+				if (animationNode.assetNamespace == "idle") {
 					_animationController.playbackSpeed = 1;
 					_animationController.play("idle",_stateTransition);
 				}
